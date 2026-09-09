@@ -3,7 +3,7 @@ import {
   Globe, Search, Filter, Shield, CheckCircle2, 
   AlertCircle, ExternalLink, Sparkles, RefreshCw, Cpu
 } from "lucide-react";
-import { MOCK_NEWS_ITEMS } from "../lib/mockData";
+import { fetchNewsItems } from "../lib/api";
 
 interface NewsItem {
   id: string;
@@ -47,51 +47,23 @@ export const GlobalNewsCenter: React.FC<GlobalNewsCenterProps> = ({
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const fetchNews = async () => {
+  const loadNews = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (selectedCategory !== "All") params.append("category", selectedCategory);
-      if (selectedTier !== "All") params.append("tier", selectedTier);
-      if (searchQuery) params.append("search", searchQuery);
-
-      const res = await fetch(`/api/news?${params.toString()}`);
-      if (res.ok) {
-        const text = await res.text();
-        if (!text.trim().startsWith("<")) {
-          const data = JSON.parse(text);
-          if (data.items && data.items.length > 0) {
-            setNews(data.items);
-            return;
-          }
-        }
-      }
-      let filtered = [...MOCK_NEWS_ITEMS];
-      if (selectedCategory !== "All") filtered = filtered.filter(i => i.category === selectedCategory);
-      if (selectedTier !== "All") filtered = filtered.filter(i => i.source_quality === selectedTier);
-      if (searchQuery) {
-        const q = searchQuery.toLowerCase();
-        filtered = filtered.filter(i => i.title.toLowerCase().includes(q) || i.content.toLowerCase().includes(q));
-      }
-      setNews(filtered);
+      const items = await fetchNewsItems(selectedCategory, selectedTier, searchQuery);
+      setNews(items || []);
     } catch (err) {
-      console.warn("Backend news stream unavailable, loading verified news fallback:", err);
-      let filtered = [...MOCK_NEWS_ITEMS];
-      if (selectedCategory !== "All") filtered = filtered.filter(i => i.category === selectedCategory);
-      if (selectedTier !== "All") filtered = filtered.filter(i => i.source_quality === selectedTier);
-      if (searchQuery) {
-        const q = searchQuery.toLowerCase();
-        filtered = filtered.filter(i => i.title.toLowerCase().includes(q) || i.content.toLowerCase().includes(q));
-      }
-      setNews(filtered);
+      console.warn("Failed to load news items:", err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchNews();
-  }, [selectedCategory, selectedTier]);
+    loadNews();
+    const interval = setInterval(loadNews, 30000);
+    return () => clearInterval(interval);
+  }, [selectedCategory, selectedTier, searchQuery]);
 
   return (
     <div className="space-y-6 pb-12">
@@ -115,14 +87,14 @@ export const GlobalNewsCenter: React.FC<GlobalNewsCenterProps> = ({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && fetchNews()}
+                onKeyDown={(e) => e.key === "Enter" && loadNews()}
                 placeholder="Search headlines..."
                 className="bg-slate-900 border border-slate-700/80 rounded-lg pl-9 pr-4 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500"
               />
             </div>
 
             <button
-              onClick={fetchNews}
+              onClick={loadNews}
               className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-sky-400" : ""}`} />

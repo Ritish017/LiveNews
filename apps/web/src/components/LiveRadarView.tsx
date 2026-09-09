@@ -5,7 +5,7 @@ import {
   Flame, RefreshCw, Eye, Film
 } from "lucide-react";
 import { V3Event } from "../types";
-import { MOCK_EVENTS } from "../lib/mockData";
+import { fetchEvents as apiFetchEvents } from "../lib/api";
 
 interface LiveRadarViewProps {
   onOpenContentStudio: (event: V3Event) => void;
@@ -26,48 +26,21 @@ export const LiveRadarView: React.FC<LiveRadarViewProps> = ({
   const [categoryFilter, setCategoryFilter] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const getFilteredMockEvents = () => {
-    let filtered = [...MOCK_EVENTS];
-    if (statusFilter !== "ALL") filtered = filtered.filter(e => e.status === statusFilter);
-    if (categoryFilter !== "ALL") filtered = filtered.filter(e => e.category.toLowerCase().includes(categoryFilter.toLowerCase()));
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      filtered = filtered.filter(e => e.title.toLowerCase().includes(q) || e.summary.toLowerCase().includes(q));
-    }
-    return filtered;
-  };
-
-  const fetchEvents = async () => {
+  const loadEvents = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (statusFilter !== "ALL") params.append("status", statusFilter);
-      if (categoryFilter !== "ALL") params.append("category", categoryFilter);
-      if (searchQuery) params.append("search", searchQuery);
-
-      const res = await fetch(`/api/events?${params.toString()}`);
-      if (res.ok) {
-        const text = await res.text();
-        if (!text.trim().startsWith("<")) {
-          const data = JSON.parse(text);
-          if (data.events && data.events.length > 0) {
-            setEvents(data.events);
-            return;
-          }
-        }
-      }
-      setEvents(getFilteredMockEvents());
+      const data = await apiFetchEvents(statusFilter, categoryFilter, searchQuery);
+      setEvents(data || []);
     } catch (err) {
-      console.warn("Backend API not reachable, loaded verified radar events fallback:", err);
-      setEvents(getFilteredMockEvents());
+      console.warn("Error loading radar events:", err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchEvents();
-    const interval = setInterval(fetchEvents, 20000); // Polling every 20s
+    loadEvents();
+    const interval = setInterval(loadEvents, 30000);
     return () => clearInterval(interval);
   }, [statusFilter, categoryFilter, searchQuery]);
 
@@ -153,7 +126,7 @@ export const LiveRadarView: React.FC<LiveRadarViewProps> = ({
           </div>
 
           <button
-            onClick={fetchEvents}
+            onClick={loadEvents}
             className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
             title="Refresh Live Radar"
           >

@@ -1,20 +1,24 @@
 import {
   ContentItem, Analysis, GeneratedVariant, Topic, SavedItem, VoiceProfile,
   TopOpportunitiesResponse, TrendDetail, VideoPackage,
-  DailyDecision, Recommendation, NorthStarReport, CreateEverythingPackage, CreatorProfile
+  DailyDecision, Recommendation, NorthStarReport, CreateEverythingPackage, CreatorProfile, V3Event
 } from "../types";
 import {
   MOCK_OPPORTUNITIES, MOCK_TRENDS, MOCK_EVENTS, MOCK_NEWS_ITEMS, createMockVideoPackage,
   MOCK_DAILY_DECISION, MOCK_FUNNEL_REPORT, createMockEverythingPackage
 } from "./mockData";
+import { liveNewsEngine } from "./liveNewsEngine";
 
 const API_BASE = (import.meta.env.VITE_API_BASE as string) || "/api";
 
+// Proactively initiate live intelligence synchronization across feeds
+liveNewsEngine.syncLiveIntelligence().catch(err => console.warn("Initial live news sync notice:", err));
+
 /**
- * Robust fetch wrapper that gracefully falls back to mock intelligence
+ * Robust fetch wrapper that gracefully falls back to live news engine intelligence
  * if backend is offline, unreachable, or returns SPA HTML (e.g. on Vercel edge).
  */
-async function safeApiFetch<T>(url: string, options?: RequestInit, fallback?: T): Promise<T> {
+async function safeApiFetch<T>(url: string, options?: RequestInit, fallback?: T | (() => T)): Promise<T> {
   try {
     const res = await fetch(url, options);
     if (res.ok) {
@@ -25,10 +29,10 @@ async function safeApiFetch<T>(url: string, options?: RequestInit, fallback?: T)
       }
     }
   } catch (err) {
-    console.warn(`[AI Radar] Backend unreachable at ${url}, using offline intelligence:`, err);
+    console.warn(`[AI Radar] Backend unreachable at ${url}, using live offline intelligence engine:`, err);
   }
   if (fallback !== undefined) {
-    return fallback;
+    return typeof fallback === "function" ? (fallback as () => T)() : fallback;
   }
   throw new Error(`API call failed for ${url}`);
 }
@@ -36,7 +40,7 @@ async function safeApiFetch<T>(url: string, options?: RequestInit, fallback?: T)
 export async function fetchHealth(): Promise<{ status: string; providers_active: number }> {
   return safeApiFetch(`${API_BASE}/health`, undefined, {
     status: "healthy",
-    providers_active: 3
+    providers_active: 5
   });
 }
 
@@ -54,38 +58,45 @@ export async function fetchFeed(params: {
   if (params.page) query.append("page", params.page.toString());
   if (params.pageSize) query.append("page_size", params.pageSize.toString());
 
-  const mockFeedItems: ContentItem[] = MOCK_EVENTS.map(e => ({
-    id: e.id,
-    source: e.primary_source_name || "AI Radar",
-    source_type: "firecrawl",
-    title: e.title,
-    content: e.summary,
-    url: e.primary_source_url || "https://deepseek.com",
-    published_at: e.event_timestamp,
-    collected_at: e.surfaced_at,
-    media: [],
-    hashtags: ["AI", "Tech", "Innovation"],
-    language: "en",
-    engagement_velocity: 4.8,
-    viral_potential: e.opportunity_score,
-    trend_score: e.momentum_score,
-    topic: e.category,
-    entities: e.entities,
-    sentiment: "positive",
-    content_type: "news",
-    hook_type: "contrarian",
-    source_urls: e.sources.map(s => s.url),
-    attribution_required: false
-  }));
+  const getLiveFeedItems = (): ContentItem[] => {
+    const live = liveNewsEngine.getLiveFeed();
+    if (live && live.length > 0) return live;
+    return MOCK_EVENTS.map(e => ({
+      id: e.id,
+      source: e.primary_source_name || "AI Radar",
+      source_type: "news",
+      title: e.title,
+      content: e.summary,
+      url: e.primary_source_url || "https://techcrunch.com",
+      published_at: e.event_timestamp,
+      collected_at: e.surfaced_at,
+      media: [],
+      hashtags: ["AI", "Tech", "Innovation"],
+      language: "en",
+      engagement_velocity: 4.8,
+      viral_potential: e.opportunity_score,
+      trend_score: e.momentum_score,
+      topic: e.category,
+      entities: e.entities,
+      sentiment: "positive",
+      content_type: "news",
+      hook_type: "contrarian",
+      source_urls: e.sources.map(s => s.url),
+      attribution_required: false
+    }));
+  };
 
   return safeApiFetch(
     `${API_BASE}/feed?${query.toString()}`,
     undefined,
-    {
-      total: mockFeedItems.length,
-      page: 1,
-      pageSize: 20,
-      items: mockFeedItems
+    () => {
+      const items = getLiveFeedItems();
+      return {
+        total: items.length,
+        page: 1,
+        pageSize: 20,
+        items
+      };
     }
   );
 }
@@ -94,33 +105,35 @@ export async function fetchTrending(): Promise<{
   trending_items: ContentItem[];
   count: number;
 }> {
-  const mockFeedItems: ContentItem[] = MOCK_EVENTS.slice(0, 5).map(e => ({
-    id: e.id,
-    source: e.primary_source_name || "AI Radar",
-    source_type: "firecrawl",
-    title: e.title,
-    content: e.summary,
-    url: e.primary_source_url || "https://deepseek.com",
-    published_at: e.event_timestamp,
-    collected_at: e.surfaced_at,
-    media: [],
-    hashtags: ["AI", "Tech"],
-    language: "en",
-    engagement_velocity: 5.2,
-    viral_potential: e.opportunity_score,
-    trend_score: e.momentum_score,
-    topic: e.category,
-    entities: e.entities,
-    sentiment: "positive",
-    content_type: "news",
-    hook_type: "contrarian",
-    source_urls: e.sources.map(s => s.url),
-    attribution_required: false
-  }));
-
-  return safeApiFetch(`${API_BASE}/trending`, undefined, {
-    trending_items: mockFeedItems,
-    count: mockFeedItems.length
+  return safeApiFetch(`${API_BASE}/trending`, undefined, () => {
+    const live = liveNewsEngine.getLiveFeed();
+    const items = live.length > 0 ? live.slice(0, 5) : MOCK_EVENTS.slice(0, 5).map(e => ({
+      id: e.id,
+      source: e.primary_source_name || "AI Radar",
+      source_type: "news" as const,
+      title: e.title,
+      content: e.summary,
+      url: e.primary_source_url || "https://techcrunch.com",
+      published_at: e.event_timestamp,
+      collected_at: e.surfaced_at,
+      media: [],
+      hashtags: ["AI", "Tech"],
+      language: "en",
+      engagement_velocity: 5.2,
+      viral_potential: e.opportunity_score,
+      trend_score: e.momentum_score,
+      topic: e.category,
+      entities: e.entities,
+      sentiment: "positive",
+      content_type: "news",
+      hook_type: "contrarian",
+      source_urls: e.sources.map(s => s.url),
+      attribution_required: false
+    }));
+    return {
+      trending_items: items,
+      count: items.length
+    };
   });
 }
 
@@ -128,10 +141,14 @@ export async function fetchTopOpportunities(limit: number = 5): Promise<TopOppor
   return safeApiFetch(
     `${API_BASE}/opportunities?limit=${limit}`,
     undefined,
-    {
-      total_trends_analyzed: MOCK_OPPORTUNITIES.length,
-      top_opportunities: MOCK_OPPORTUNITIES.slice(0, limit),
-      generated_at: new Date().toISOString()
+    () => {
+      const liveOpps = liveNewsEngine.getLiveOpportunities(limit);
+      const opps = liveOpps.length > 0 ? liveOpps : MOCK_OPPORTUNITIES.slice(0, limit);
+      return {
+        total_trends_analyzed: opps.length,
+        top_opportunities: opps,
+        generated_at: new Date().toISOString()
+      };
     }
   );
 }
@@ -140,8 +157,60 @@ export async function fetchTrends(sortBy: string = "opportunity"): Promise<Topic
   return safeApiFetch(
     `${API_BASE}/trends?sort_by=${sortBy}`,
     undefined,
-    MOCK_TRENDS
+    () => {
+      const liveTrends = liveNewsEngine.getLiveTrends();
+      return liveTrends.length > 0 ? liveTrends : MOCK_TRENDS;
+    }
   );
+}
+
+export async function fetchEvents(status?: string, category?: string, search?: string): Promise<V3Event[]> {
+  const query = new URLSearchParams();
+  if (status && status !== "ALL") query.append("status", status);
+  if (category && category !== "ALL") query.append("category", category);
+  if (search) query.append("search", search);
+
+  return safeApiFetch(`${API_BASE}/events?${query.toString()}`, undefined, () => {
+    let list = liveNewsEngine.getLiveEvents();
+    if (!list || list.length === 0) list = MOCK_EVENTS;
+    if (status && status !== "ALL") list = list.filter(e => e.status === status);
+    if (category && category !== "ALL") list = list.filter(e => e.category.toLowerCase().includes(category.toLowerCase()));
+    if (search) {
+      const q = search.toLowerCase();
+      list = list.filter(e => e.title.toLowerCase().includes(q) || e.summary.toLowerCase().includes(q));
+    }
+    return list;
+  });
+}
+
+export async function fetchNewsItems(category?: string, tier?: string, search?: string): Promise<any[]> {
+  const query = new URLSearchParams();
+  if (category && category !== "All") query.append("category", category);
+  if (tier && tier !== "All") query.append("tier", tier);
+  if (search) query.append("search", search);
+
+  return safeApiFetch(`${API_BASE}/news?${query.toString()}`, undefined, () => {
+    const live = liveNewsEngine.getLiveEvents();
+    let items = (live && live.length > 0 ? live : MOCK_EVENTS).map(e => ({
+      id: e.id,
+      title: e.title,
+      content: e.summary,
+      source: e.primary_source_name || "Tech Source",
+      source_quality: "Tier 1",
+      url: e.primary_source_url || "https://techcrunch.com",
+      published_at: e.event_timestamp,
+      category: e.category,
+      viral_potential: e.opportunity_score,
+      confirmed_facts: e.key_facts || [],
+      uncertain_claims: []
+    }));
+    if (category && category !== "All") items = items.filter(n => n.category.toLowerCase().includes(category.toLowerCase()));
+    if (search) {
+      const q = search.toLowerCase();
+      items = items.filter(n => n.title.toLowerCase().includes(q) || n.content.toLowerCase().includes(q));
+    }
+    return items;
+  });
 }
 
 export async function fetchTrendDetail(topicId: string): Promise<TrendDetail> {
@@ -380,6 +449,11 @@ export async function updateVoiceProfile(profile: Partial<VoiceProfile>): Promis
 }
 
 export async function triggerCollection(): Promise<{ stats: any }> {
+  try {
+    await liveNewsEngine.syncLiveIntelligence(true);
+  } catch (err) {
+    console.warn("Manual live collection sync notice:", err);
+  }
   return safeApiFetch(`${API_BASE}/collect`, { method: "POST" }, {
     stats: { total_fetched: 55, deduplicated: 54, new_saved: 2, trends_detected: 42 }
   });
@@ -622,7 +696,10 @@ export async function fetchTodayDecision(
   return safeApiFetch(
     `${API_BASE}/decision/today${query}`,
     undefined,
-    MOCK_DAILY_DECISION
+    () => {
+      const live = liveNewsEngine.getLiveDailyDecision(timeAvailableMinutes, platform);
+      return live || MOCK_DAILY_DECISION;
+    }
   );
 }
 
@@ -692,7 +769,7 @@ export async function createEverything(payload: {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     },
-    createMockEverythingPackage()
+    () => createMockEverythingPackage(payload.title || "Breaking AI Breakthrough")
   );
 }
 

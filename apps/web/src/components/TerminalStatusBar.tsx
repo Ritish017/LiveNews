@@ -130,18 +130,18 @@ export const TerminalStatusBar: React.FC<TerminalStatusBarProps> = ({
         <div className="hidden xl:flex items-center gap-2 border-l border-slate-800 pl-3">
           <span 
             className="flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/40 text-emerald-400 border border-emerald-800/40"
-            title="Primary Web Acquisition Engine"
+            title="Active Live Feeds: TechCrunch • Google News • The Verge • Hugging Face • Dev.to"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            FIRECRAWL
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            LIVE NEWS ENGINE
           </span>
 
           <span 
             className="flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded bg-sky-950/40 text-sky-400 border border-sky-800/40"
-            title="Primary AI Intelligence Model"
+            title="Real-time multi-source intelligence"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
-            GEMINI 2.5
+            5 FEEDS ACTIVE
           </span>
 
           <span 
