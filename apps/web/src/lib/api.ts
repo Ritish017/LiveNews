@@ -1,9 +1,11 @@
 import {
   ContentItem, Analysis, GeneratedVariant, Topic, SavedItem, VoiceProfile,
-  TopOpportunitiesResponse, TrendDetail, VideoPackage
+  TopOpportunitiesResponse, TrendDetail, VideoPackage,
+  DailyDecision, Recommendation, NorthStarReport, CreateEverythingPackage, CreatorProfile
 } from "../types";
 import {
-  MOCK_OPPORTUNITIES, MOCK_TRENDS, MOCK_EVENTS, MOCK_NEWS_ITEMS, createMockVideoPackage
+  MOCK_OPPORTUNITIES, MOCK_TRENDS, MOCK_EVENTS, MOCK_NEWS_ITEMS, createMockVideoPackage,
+  MOCK_DAILY_DECISION, MOCK_FUNNEL_REPORT, createMockEverythingPackage
 } from "./mockData";
 
 const API_BASE = (import.meta.env.VITE_API_BASE as string) || "/api";
@@ -600,3 +602,124 @@ export async function submitVideoFeedback(payload: {
 // Aliases used across V3.3 Video Director Studio
 export const analyzeVideoForensics = evaluateForensicQuality;
 export const fetchLearnedHeuristics = fetchVideoLearning;
+
+// ============================================================================
+// North Star §13.1, §16.1, §28: Daily Decision & Recommendation Engine
+// ============================================================================
+
+export async function fetchTodayDecision(
+  timeAvailableMinutes?: number,
+  platform?: string
+): Promise<DailyDecision> {
+  const params = new URLSearchParams();
+  if (timeAvailableMinutes !== undefined) {
+    params.append("time_available_minutes", timeAvailableMinutes.toString());
+  }
+  if (platform && platform !== "ALL") {
+    params.append("platform", platform);
+  }
+  const query = params.toString() ? `?${params.toString()}` : "";
+  return safeApiFetch(
+    `${API_BASE}/decision/today${query}`,
+    undefined,
+    MOCK_DAILY_DECISION
+  );
+}
+
+export async function recommendNextOpportunity(payload?: {
+  time_available_minutes?: number;
+  platform_override?: string;
+  preferred_angle?: string;
+}): Promise<Recommendation> {
+  return safeApiFetch(
+    `${API_BASE}/decision/recommend`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload || {})
+    },
+    MOCK_DAILY_DECISION.top_recommendation
+  );
+}
+
+// ============================================================================
+// North Star §17.1: The North Star Funnel Metrics (Time to Publishable)
+// ============================================================================
+
+export async function fetchFunnelMetrics(days = 30): Promise<NorthStarReport> {
+  return safeApiFetch(
+    `${API_BASE}/funnel/metrics?days=${days}`,
+    undefined,
+    MOCK_FUNNEL_REPORT
+  );
+}
+
+export async function recordFunnelTransition(
+  lifecycleId: string,
+  stage: string,
+  qualityGate?: Record<string, number>
+): Promise<{ status: string; lifecycle_id: string; stage: string }> {
+  return safeApiFetch(
+    `${API_BASE}/funnel/transition`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        lifecycle_id: lifecycleId,
+        stage,
+        quality_gate: qualityGate
+      })
+    },
+    { status: "ok", lifecycle_id: lifecycleId, stage }
+  );
+}
+
+// ============================================================================
+// North Star §13.2, §29: Create Everything 1-Click Suite
+// ============================================================================
+
+export async function createEverything(payload: {
+  opportunity_id: string;
+  title?: string;
+  summary?: string;
+  platform?: string;
+  angle?: string;
+}): Promise<CreateEverythingPackage> {
+  return safeApiFetch(
+    `${API_BASE}/content/create-everything`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    },
+    createMockEverythingPackage()
+  );
+}
+
+// ============================================================================
+// Creator Profile & Intelligence
+// ============================================================================
+
+export async function fetchCreatorProfile(): Promise<CreatorProfile> {
+  return safeApiFetch(`${API_BASE}/creator/profile`, undefined, {
+    creator_id: "default_creator",
+    niche: "AI Engineering & Systems Architecture",
+    tone: "Authoritative, technically rigorous, anti-hype, code-first",
+    primary_platforms: ["X", "LinkedIn", "YouTube", "Instagram"],
+    target_audience: "AI Engineers, Tech Leads, Founders, and Systems Builders",
+    content_style_notes: "Deep technical breakdowns, no buzzwords, data-backed comparisons."
+  });
+}
+
+export async function updateCreatorProfile(payload: Partial<CreatorProfile>): Promise<any> {
+  return safeApiFetch(
+    `${API_BASE}/creator/profile`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    },
+    { status: "ok", updated: true }
+  );
+}
+

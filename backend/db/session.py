@@ -103,6 +103,31 @@ def _run_migrations(connection):
                     connection.execute(text(sql))
                     logger.info(f"Added missing column '{col_name}' to topics")
 
+        # Check content_performance table columns — North Star §12.2 causal chain
+        # and the metrics the funnel needs. Every column is nullable: a missing
+        # metric must read as "not measured", never as zero.
+        cols_res_p = connection.execute(text("PRAGMA table_info(content_performance)"))
+        existing_cols_p = {row[1] for row in cols_res_p.fetchall()}
+
+        if existing_cols_p:
+            p_migrations = [
+                ("platform", "ALTER TABLE content_performance ADD COLUMN platform VARCHAR(30)"),
+                ("lifecycle_id", "ALTER TABLE content_performance ADD COLUMN lifecycle_id VARCHAR(36)"),
+                ("event_id", "ALTER TABLE content_performance ADD COLUMN event_id VARCHAR(36)"),
+                ("variant_id", "ALTER TABLE content_performance ADD COLUMN variant_id VARCHAR(36)"),
+                ("video_prompt_id", "ALTER TABLE content_performance ADD COLUMN video_prompt_id VARCHAR(36)"),
+                ("impressions", "ALTER TABLE content_performance ADD COLUMN impressions INTEGER"),
+                ("bookmarks", "ALTER TABLE content_performance ADD COLUMN bookmarks INTEGER"),
+                ("watch_time_seconds", "ALTER TABLE content_performance ADD COLUMN watch_time_seconds FLOAT"),
+                ("completion_rate", "ALTER TABLE content_performance ADD COLUMN completion_rate FLOAT"),
+                ("ctr", "ALTER TABLE content_performance ADD COLUMN ctr FLOAT"),
+                ("follower_delta", "ALTER TABLE content_performance ADD COLUMN follower_delta INTEGER"),
+            ]
+            for col_name, sql in p_migrations:
+                if col_name not in existing_cols_p:
+                    connection.execute(text(sql))
+                    logger.info(f"Added missing column '{col_name}' to content_performance")
+
     except Exception as e:
         logger.warning(f"Schema migration notice: {e}")
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ContentItem, Topic, SavedItem, Analysis, OpportunityCard, V3Event, TrendDetail } from "./types";
+import { ContentItem, Topic, SavedItem, Analysis, OpportunityCard, V3Event, TrendDetail, CreateEverythingPackage } from "./types";
 import {
   fetchFeed,
   fetchTrending,
@@ -12,6 +12,9 @@ import {
 } from "./lib/api";
 import { Navbar, V3NavTab } from "./components/Navbar";
 import { TerminalStatusBar } from "./components/TerminalStatusBar";
+import { TodayDecisionView } from "./components/TodayDecisionView";
+import { NorthStarFunnelModal } from "./components/NorthStarFunnelModal";
+import { CreateEverythingModal } from "./components/CreateEverythingModal";
 import { LiveRadarView } from "./components/LiveRadarView";
 import { GlobalNewsCenter } from "./components/GlobalNewsCenter";
 import { TrendNetworkGraph } from "./components/TrendNetworkGraph";
@@ -27,7 +30,7 @@ import { VideoDirectorStudio } from "./components/VideoDirectorStudio";
 import { AlertCircle } from "lucide-react";
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<V3NavTab>("radar");
+  const [activeTab, setActiveTab] = useState<V3NavTab>("today");
 
   // V2/V3 Data states
   const [opportunities, setOpportunities] = useState<OpportunityCard[]>([]);
@@ -46,6 +49,11 @@ export function App() {
   const [isDailyBriefOpen, setIsDailyBriefOpen] = useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [selectedTrendDetailId, setSelectedTrendDetailId] = useState<string | null>(null);
+
+  // North Star Decision & Funnel state
+  const [isFunnelOpen, setIsFunnelOpen] = useState<boolean>(false);
+  const [isCreateEverythingOpen, setIsCreateEverythingOpen] = useState<boolean>(false);
+  const [createEverythingPackage, setCreateEverythingPackage] = useState<CreateEverythingPackage | null>(null);
 
   // Load Opportunities & Saved Items
   const loadInitialData = async () => {
@@ -98,7 +106,7 @@ export function App() {
   };
 
   const handleWhatShouldIPost = () => {
-    setActiveTab("opportunities");
+    setActiveTab("today");
   };
 
   const handleSaveItem = async (item: ContentItem) => {
@@ -213,6 +221,7 @@ export function App() {
         savedCount={savedItems.length}
         onRefresh={handleRefresh}
         onWhatShouldIPost={handleWhatShouldIPost}
+        onOpenFunnel={() => setIsFunnelOpen(true)}
         isRefreshing={isRefreshing}
       />
 
@@ -228,6 +237,21 @@ export function App() {
               Retry Sync
             </button>
           </div>
+        )}
+
+        {/* TAB 0: TODAY'S POST (NORTH STAR FIRST-CLASS DECISION ENGINE) */}
+        {activeTab === "today" && (
+          <TodayDecisionView
+            onOpenVideoDirector={(ev) => {
+              setVideoDirectorEvent(ev);
+              setActiveTab("video");
+            }}
+            onOpenFunnelModal={() => setIsFunnelOpen(true)}
+            onOpenCreateEverything={(pkg) => {
+              setCreateEverythingPackage(pkg);
+              setIsCreateEverythingOpen(true);
+            }}
+          />
         )}
 
         {/* TAB 1: LIVE RADAR (PRIMARY COMMAND CENTER) */}
@@ -375,6 +399,23 @@ export function App() {
           }}
         />
       )}
+
+      {/* 5. NORTH STAR FUNNEL METRICS MODAL (§17.1) */}
+      <NorthStarFunnelModal
+        isOpen={isFunnelOpen}
+        onClose={() => setIsFunnelOpen(false)}
+      />
+
+      {/* 6. CREATE EVERYTHING MODAL (§13.2, §29) */}
+      <CreateEverythingModal
+        isOpen={isCreateEverythingOpen}
+        packageData={createEverythingPackage}
+        onClose={() => setIsCreateEverythingOpen(false)}
+        onOpenInVideoDirector={(pkg) => {
+          setIsCreateEverythingOpen(false);
+          setActiveTab("video");
+        }}
+      />
     </div>
   );
 }

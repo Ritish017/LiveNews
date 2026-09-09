@@ -754,3 +754,256 @@ export interface FailurePatternDashboard {
   total_evaluations_monitored: number;
 }
 
+// =========================================================================
+// NORTH STAR PRODUCT SUITE TYPES (§8, §13, §16.1, §17.1, §28, §29)
+// =========================================================================
+
+export interface ScoreContribution {
+  factor: string;
+  raw_value: number;
+  weight: number;
+  points: number;
+  basis: "MEASURED" | "DECLARED" | "DEFAULT";
+  sample_size: number;
+  explanation: string;
+}
+
+export interface PersonalizedOpportunity {
+  base_score: number;
+  personalized_score: number;
+  delta_vs_generic: number;
+  opportunity_type: string;
+  world_factors: ScoreContribution[];
+  creator_factors: ScoreContribution[];
+  measured_factor_count: number;
+  assumed_factor_count: number;
+}
+
+export interface TimingVerdict {
+  action: "POST_NOW" | "POST_SOON" | "WATCH" | "WAIT" | "SKIP";
+  reason: string;
+  urgency_score: number;
+}
+
+export interface RecommendationSource {
+  name: string;
+  url?: string;
+  published_at?: string;
+  quality_tier?: string;
+}
+
+export interface Recommendation {
+  event_id?: string;
+  topic_id?: string;
+  headline: string;
+  what_is_happening: string;
+  why_it_matters: string;
+  what_nobody_is_explaining: string;
+  what_everyone_is_saying: string;
+  opportunity: PersonalizedOpportunity;
+  timing: TimingVerdict;
+  best_angle: string;
+  why_this_angle: string;
+  alternative_angles: string[];
+  platform: string;
+  why_this_platform: string;
+  content_format: string;
+  estimated_production_minutes: number;
+  hook_type: string;
+  hook: string;
+  production: {
+    create_everything_endpoint: string;
+    payload: Record<string, any>;
+    visual_engine_hint: string;
+    visual_engine_reason: string;
+    estimated_production_minutes: number;
+  };
+  success_criteria: {
+    has_baseline: boolean;
+    note: string;
+    log_endpoint: string;
+    target_metric?: string;
+  };
+  event_status: string;
+  event_confidence: number;
+  source_count: number;
+  sources: RecommendationSource[];
+  claims_to_avoid: string[];
+}
+
+export interface SkippedCandidate {
+  headline: string;
+  event_id?: string;
+  action: string;
+  reason: string;
+  score: number;
+}
+
+export interface DailyDecision {
+  generated_at: string;
+  creator: {
+    creator_id: string;
+    audience: string;
+    voice_tone: string;
+    technical_depth: string;
+    risk_tolerance: number;
+    measured_posts: number;
+    baseline_engagement_rate?: number;
+  };
+  candidates_considered: number;
+  top_recommendation?: Recommendation;
+  alternatives: Recommendation[];
+  publish_now: string[];
+  ignore: SkippedCandidate[];
+  evidence_coverage: {
+    measured_factors: number;
+    assumed_factors: number;
+    creator_posts_on_record: number;
+    personalized: boolean;
+    delta_vs_generic: number;
+  };
+  assumptions: string[];
+  no_recommendation_reason?: string;
+}
+
+export interface StageDuration {
+  from_stage: string;
+  to_stage: string;
+  label: string;
+  median_seconds?: number;
+  p90_seconds?: number;
+  fastest_seconds?: number;
+  human: string;
+  sample_size: number;
+}
+
+export interface QualityHold {
+  fact_check?: number;
+  originality?: number;
+  prompt_readiness?: number;
+  technical?: number;
+  visual?: number;
+  story?: number;
+  platform?: number;
+  human?: number;
+  sample_size: number;
+}
+
+export interface NorthStarTrend {
+  current_median_seconds?: number;
+  previous_median_seconds?: number;
+  change_pct?: number;
+  direction: string;
+  quality_direction: string;
+  verdict: string;
+}
+
+export interface NorthStarReport {
+  generated_at: string;
+  window_days: number;
+  clock_start: string;
+  clock_start_note: string;
+  published_count: number;
+  completed_count: number;
+  measured: boolean;
+  time_to_publishable_median_seconds?: number;
+  time_to_publishable_p90_seconds?: number;
+  time_to_publishable_fastest_seconds?: number;
+  median_human: string;
+  stage_durations: StageDuration[];
+  slowest_stage?: string;
+  slowest_stage_seconds?: number;
+  quality_hold: QualityHold;
+  trend: NorthStarTrend;
+  in_flight: Record<string, number>;
+  stalled: Array<{
+    lifecycle_id: string;
+    topic?: string;
+    stage: string;
+    stalled_at: string;
+    idle_hours: number;
+  }>;
+  honest_gaps: string[];
+}
+
+export interface CreateEverythingPackage {
+  status: string;
+  lifecycle_id: string;
+  funnel_stage: string;
+  strategy: {
+    topic: string;
+    angle: string;
+    audience: string;
+    goal: string;
+    hook_strategy: string;
+    visual_strategy: string;
+    platform_strategy: string;
+    reasoning: string;
+  };
+  content_suite: {
+    brief: any;
+    quality: any;
+    x_content: {
+      single_post: string;
+      thread: string[];
+    };
+    x_hooks: HookCandidate[];
+    linkedin_content: {
+      content: string;
+    };
+    instagram_carousel: {
+      slides: Array<{ slide_number: number; title: string; body: string; visual_note?: string }>;
+    };
+    instagram_reel: {
+      script: string;
+    };
+    youtube_content: {
+      titles: string[];
+      thumbnails: Array<{ title: string; visual_concept: string; badge_text?: string }>;
+      script: string;
+      pinned_comment: string;
+    };
+  };
+  video_package: VideoPackage;
+  publishing: {
+    x: {
+      text: string;
+      thread: string[];
+      top_hook: string;
+      hashtags: string[];
+    };
+    linkedin: {
+      text: string;
+      cta: string;
+      hashtags: string[];
+    };
+    instagram: {
+      carousel_slides: Array<{ slide_number: number; title: string; body: string; visual_note?: string }>;
+      reel_script: string;
+      caption: string;
+      hashtags: string[];
+    };
+    youtube: {
+      titles: string[];
+      thumbnail_concepts: Array<{ title: string; visual_concept: string; badge_text?: string }>;
+      script: string;
+      pinned_comment: string;
+    };
+  };
+  quality_summary: {
+    content_quality: any;
+    video_quality: any;
+  };
+}
+
+export interface CreatorProfile {
+  creator_id: string;
+  niche: string;
+  tone: string;
+  primary_platforms: string[];
+  target_audience: string;
+  content_style_notes?: string;
+}
+
+
+

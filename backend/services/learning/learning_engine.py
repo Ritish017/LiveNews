@@ -92,12 +92,12 @@ class LearningEngine:
         records = res.scalars().all()
 
         if not records:
-            # Return baseline profile
+            # Return baseline profile with honest assumptions labeled as unmeasured
             return PersonalContentProfile(
                 winning_insights=[
-                    "Contrarian hooks with explicit benchmark numbers achieve 2.4x higher reply rates.",
-                    "Threads structured with caveats at tweet 5 hold 82% read-through retention.",
-                    "No-hashtag technical posts show higher algorithmic distribution on X."
+                    "Baseline heuristic (assumption): Contrarian hooks with verifiable benchmarks recommended for technical audiences.",
+                    "Baseline heuristic (assumption): Technical specificity and concrete cost metrics outperform broad announcements.",
+                    "No creator performance data recorded yet — log published posts to calibrate empirical insights."
                 ]
             )
 

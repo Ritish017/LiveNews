@@ -757,3 +757,358 @@ export function createMockVideoPackage(topic: string = "DeepSeek-R1 Open Reasoni
   };
 }
 
+// =========================================================================
+// NORTH STAR PRODUCT SUITE MOCK DATA (§8, §13, §16.1, §17.1, §28, §29)
+// =========================================================================
+
+export const MOCK_DAILY_DECISION: any = {
+  generated_at: new Date().toISOString(),
+  creator: {
+    creator_id: "default",
+    audience: "AI Engineers & Technical Founders",
+    voice_tone: "Technical & Direct",
+    technical_depth: "High (Code & Architectural Metrics)",
+    risk_tolerance: 0.7,
+    measured_posts: 12,
+    baseline_engagement_rate: 4.85
+  },
+  candidates_considered: 14,
+  top_recommendation: {
+    event_id: "event_deepseek_r1",
+    headline: "DeepSeek-R1 Open Reasoning Model Launch with Pure RL",
+    what_is_happening: "DeepSeek officially released open weights for DeepSeek-R1 and DeepSeek-R1-Zero with MIT licensing, matching OpenAI o1 on math benchmarks at 95% lower training cost.",
+    why_it_matters: "This destroys the premise that frontier reasoning requires billions in proprietary human labeling. Open weights have reached frontier parity for developer inference.",
+    what_nobody_is_explaining: "Most coverage fixates on the benchmark scores. What nobody is explaining is the pure RL cold-start recipe and how it affects local developer fine-tuning economics.",
+    what_everyone_is_saying: "Everyone is hyping the headline math scores and comparing training costs with OpenAI without analyzing architectural reproduction limits.",
+    opportunity: {
+      base_score: 94.0,
+      personalized_score: 96.5,
+      delta_vs_generic: 2.5,
+      opportunity_type: "EXPLODING_OPPORTUNITY",
+      world_factors: [
+        { factor: "momentum", raw_value: 97.0, weight: 0.22, points: 21.34, basis: "MEASURED", sample_size: 14, explanation: "Extreme acceleration across global tech news and arXiv preprints." },
+        { factor: "freshness", raw_value: 95.0, weight: 0.18, points: 17.10, basis: "MEASURED", sample_size: 1, explanation: "Released under 4 hours ago, still in early viral distribution curve." },
+        { factor: "novelty", raw_value: 96.0, weight: 0.15, points: 14.40, basis: "MEASURED", sample_size: 1, explanation: "First successful open replication of post-training reasoning at scale." },
+        { factor: "gap_quality", raw_value: 92.0, weight: 0.15, points: 13.80, basis: "MEASURED", sample_size: 8, explanation: "Developer impact and latency benchmarks are critically under-covered." },
+        { factor: "competition", raw_value: 35.0, weight: 0.15, points: 9.75, basis: "MEASURED", sample_size: 14, explanation: "Low competition on rigorous technical diffs; high on superficial hype." },
+        { factor: "audience_fit", raw_value: 96.0, weight: 0.15, points: 14.40, basis: "MEASURED", sample_size: 1, explanation: "Perfect match for AI systems developers and technical builders." }
+      ],
+      creator_factors: [
+        { factor: "topic_affinity", raw_value: 95.0, weight: 0.5, points: 1.5, basis: "MEASURED", sample_size: 8, explanation: "Historical posts on AI Models outperform creator baseline by +34%." },
+        { factor: "format_affinity", raw_value: 90.0, weight: 0.5, points: 1.0, basis: "MEASURED", sample_size: 5, explanation: "Technical breakdown threads hold 88% read-through retention." }
+      ],
+      measured_factor_count: 8,
+      assumed_factor_count: 0
+    },
+    timing: {
+      action: "POST_NOW",
+      reason: "Topic velocity is accelerating (+182% in 2 hours). High opportunity window open before saturation peaks in 6 hours.",
+      urgency_score: 95.0
+    },
+    best_angle: "What this release actually changes for developers: the inference economics of local reasoning tokens",
+    why_this_angle: "Over 85% of existing social coverage rehashes benchmark tables. Developer cost curves under sustained agent loops are completely underserved.",
+    alternative_angles: [
+      "Why pure RL cold-starts eliminate the human annotation bottleneck",
+      "Running 1.5B distilled R1 locally on Apple Silicon: latency vs accuracy",
+      "Contrarian take: Why synthetic data distillation has a hard ceiling"
+    ],
+    platform: "x",
+    why_this_platform: "Real-time technical discourse and open-source release discovery peak on X within the first 6 hours.",
+    content_format: "thread",
+    estimated_production_minutes: 15,
+    hook_type: "CONTRARIAN",
+    hook: "The narrative that frontier AI reasoning requires $100M compute clusters was just proven wrong.",
+    production: {
+      create_everything_endpoint: "POST /api/content/create-everything",
+      payload: {
+        event_id: "event_deepseek_r1",
+        platform: "x",
+        angle: "What this release actually changes for developers",
+        format: "thread"
+      },
+      visual_engine_hint: "hybrid",
+      visual_engine_reason: "Combine Remotion code diffs for KV cache comparison with Google Veo footage for architectural scale visualization.",
+      estimated_production_minutes: 15
+    },
+    success_criteria: {
+      has_baseline: true,
+      note: "Aim for >5.2% engagement rate and >150 bookmarks to beat your historical AI Model baseline.",
+      log_endpoint: "POST /api/performance/log",
+      target_metric: "5.2% Engagement / 150+ Bookmarks"
+    },
+    event_status: "CONFIRMED",
+    event_confidence: 98.0,
+    source_count: 14,
+    sources: [
+      { name: "DeepSeek Official Blog", url: "https://deepseek.com/blog/deepseek-r1", quality_tier: "Tier 1" },
+      { name: "Hugging Face Models", url: "https://huggingface.co/deepseek-ai/DeepSeek-R1", quality_tier: "Tier 1" },
+      { name: "TechCrunch", url: "https://techcrunch.com", quality_tier: "Tier 2" }
+    ],
+    claims_to_avoid: [
+      "Avoid claiming OpenAI is obsolete without qualifying API tooling advantages.",
+      "Do NOT repeat superficial 'AGI is here' clickbait platitudes."
+    ]
+  },
+  alternatives: [
+    {
+      event_id: "event_gemini_flash",
+      headline: "Gemini 2.0 Flash Thinking Real-Time Audio & Vision",
+      what_is_happening: "Google opens native multimodal streaming API with bidirectional audio and sub-200ms latency.",
+      why_it_matters: "Enables natural conversational voice agents with low overhead.",
+      what_nobody_is_explaining: "WebSocket protocol overhead and client-side token buffering latency.",
+      what_everyone_is_saying: "Comparing voice responsiveness to Her movie trailer.",
+      opportunity: {
+        base_score: 89.0,
+        personalized_score: 91.0,
+        delta_vs_generic: 2.0,
+        opportunity_type: "ACCELERATING",
+        world_factors: [],
+        creator_factors: [],
+        measured_factor_count: 6,
+        assumed_factor_count: 1
+      },
+      timing: {
+        action: "POST_SOON",
+        reason: "Steady acceleration; prime opportunity for a video demo.",
+        urgency_score: 84.0
+      },
+      best_angle: "Building voice agents: Gemini 2.0 Flash vs Whisper/TTS pipelines",
+      why_this_angle: "Practical systems architecture comparison.",
+      alternative_angles: ["Latency benchmarking on mobile 5G"],
+      platform: "youtube",
+      why_this_platform: "Visual demo and audio responsiveness shine in video format.",
+      content_format: "short",
+      estimated_production_minutes: 30,
+      hook_type: "BUILDER",
+      hook: "We replaced a 3-model voice agent pipeline with a single WebSocket stream.",
+      production: {
+        create_everything_endpoint: "POST /api/content/create-everything",
+        payload: { platform: "youtube" },
+        visual_engine_hint: "remotion",
+        visual_engine_reason: "Deterministic animated latency waveform charts.",
+        estimated_production_minutes: 30
+      },
+      success_criteria: {
+        has_baseline: true,
+        note: "Aim for 75% 30-second retention.",
+        log_endpoint: "POST /api/performance/log"
+      },
+      event_status: "CONFIRMED",
+      event_confidence: 96.0,
+      source_count: 9,
+      sources: [{ name: "Google DeepMind", quality_tier: "Tier 1" }],
+      claims_to_avoid: ["No unverified claims on token pricing without API docs reference."]
+    }
+  ],
+  publish_now: [
+    "DeepSeek-R1 Open Reasoning Model Launch with Pure RL",
+    "Gemini 2.0 Flash Thinking Real-Time Audio & Vision"
+  ],
+  ignore: [
+    {
+      headline: "Vague Tech Blog Rumor on Unnamed 500B Model",
+      action: "SKIP",
+      reason: "Single anonymous source without verifiable repository or benchmark artifact. Contradicted by lead engineers.",
+      score: 18.0
+    },
+    {
+      headline: "Standard Maintenance Release for Minor Open Source Library",
+      action: "WATCH",
+      reason: "Low momentum and routine bugfix patch. No conceptual novelty or audience hook.",
+      score: 32.0
+    },
+    {
+      headline: "Corporate Press Release Announcing Strategic AI Partnership",
+      action: "WAIT",
+      reason: "High promotional buzzword density with zero technical documentation or reproducible metrics.",
+      score: 38.0
+    }
+  ],
+  evidence_coverage: {
+    measured_factors: 8,
+    assumed_factors: 0,
+    creator_posts_on_record: 12,
+    personalized: true,
+    delta_vs_generic: 2.5
+  },
+  assumptions: [
+    "Personalized ranking calibrated against 12 verified posts in Creator Profile.",
+    "Time availability budgeted at 30 minutes for single post or multi-tweet thread."
+  ]
+};
+
+export const MOCK_FUNNEL_REPORT: any = {
+  generated_at: new Date().toISOString(),
+  window_days: 30,
+  clock_start: "EVENT_OCCURRED",
+  clock_start_note: "Timed from when the event occurred in the world — true end-to-end latency.",
+  published_count: 18,
+  completed_count: 18,
+  measured: true,
+  time_to_publishable_median_seconds: 2520,
+  time_to_publishable_p90_seconds: 4320,
+  time_to_publishable_fastest_seconds: 840,
+  median_human: "42.0m",
+  stage_durations: [
+    { from_stage: "EVENT_OCCURRED", to_stage: "EVENT_DETECTED", label: "Discovery Latency", median_seconds: 320, p90_seconds: 600, fastest_seconds: 45, human: "5.3m", sample_size: 18 },
+    { from_stage: "EVENT_DETECTED", to_stage: "OPPORTUNITY_IDENTIFIED", label: "Opportunity Scoring", median_seconds: 42, p90_seconds: 85, fastest_seconds: 12, human: "42s", sample_size: 18 },
+    { from_stage: "OPPORTUNITY_IDENTIFIED", to_stage: "CONTENT_CREATED", label: "Strategy & Scripting", median_seconds: 480, p90_seconds: 900, fastest_seconds: 180, human: "8.0m", sample_size: 18 },
+    { from_stage: "CONTENT_CREATED", to_stage: "VIDEO_PRODUCED", label: "Video Plan Compilation", median_seconds: 720, p90_seconds: 1200, fastest_seconds: 240, human: "12.0m", sample_size: 14 },
+    { from_stage: "VIDEO_PRODUCED", to_stage: "QUALITY_APPROVED", label: "Quality Audit Gate", median_seconds: 300, p90_seconds: 540, fastest_seconds: 90, human: "5.0m", sample_size: 18 },
+    { from_stage: "QUALITY_APPROVED", to_stage: "PUBLISHED", label: "Human Review & Publish", median_seconds: 658, p90_seconds: 1500, fastest_seconds: 180, human: "11.0m", sample_size: 18 }
+  ],
+  slowest_stage: "VIDEO_PRODUCED",
+  slowest_stage_seconds: 720,
+  quality_hold: {
+    prompt_readiness: 94.5,
+    technical: 92.0,
+    visual: 91.5,
+    story: 93.0,
+    platform: 92.5,
+    human: 91.0,
+    sample_size: 18
+  },
+  trend: {
+    current_median_seconds: 2520,
+    previous_median_seconds: 3480,
+    change_pct: -27.6,
+    direction: "FASTER",
+    quality_direction: "IMPROVED",
+    verdict: "Publishing cycle is 27.6% faster than last window while quality improved across all 6 dimensions."
+  },
+  in_flight: {
+    OPPORTUNITY_IDENTIFIED: 3,
+    CONTENT_CREATED: 2,
+    VIDEO_PRODUCED: 1
+  },
+  stalled: [],
+  honest_gaps: [
+    "VIDEO_PRODUCED duration measured across 14 video pieces (4 text pieces skipped video stage)."
+  ]
+};
+
+export function createMockEverythingPackage(title = "DeepSeek-R1 Open Reasoning Model Launch"): any {
+  return {
+    status: "success",
+    lifecycle_id: "lc_mock_001",
+    funnel_stage: "VIDEO_PRODUCED",
+    strategy: {
+      topic: title,
+      angle: "What this release actually changes for developers: the inference economics of local reasoning tokens",
+      audience: "AI Engineers, Systems Architects, and Technical Founders",
+      goal: "Establish technical authority and spark high-signal architectural debate without hype",
+      hook_strategy: "Contrarian opening debunking the compute cluster cost assumption",
+      visual_strategy: "Dark technical Remotion benchmark charts with Google Veo hardware scale shots",
+      platform_strategy: "Lead on X with technical thread; post executive takeaway on LinkedIn; visual carousel on Instagram; high-retention Short on YouTube",
+      reasoning: "Grounded in verified multi-source event with high momentum and zero competitive angle saturation."
+    },
+    content_suite: {
+      brief: {
+        topic: title,
+        angle: "What this release actually changes for developers"
+      },
+      quality: {
+        total_quality_score: 93.5,
+        fact_check_score: 96.0,
+        originality_score: 94.0,
+        hook_strength_score: 92.0,
+        clarity_score: 95.0,
+        platform_fit_score: 94.0,
+        audience_fit_score: 93.0,
+        cta_effectiveness: 90.0,
+        spam_score: 2.0,
+        clickbait_penalty: 0.0,
+        editorial_quality_score: 94.0
+      },
+      x_content: {
+        single_post: `The narrative that frontier AI reasoning requires $100M compute clusters was just proven wrong.\n\nDeepSeek-R1 open weights match o1 on math benchmarks at 95% lower training cost.\n\nHere are the 3 architectural decisions that made this possible:\n\n1/ Pure RL cold-start (no human annotation bottleneck)\n2/ Multi-head latent attention (93% KV cache compression)\n3/ Dual-stage distillation into 1.5B-70B models\n\nThe inference economics for indie developers just flipped permanently.`,
+        thread: [
+          `1/ The narrative that frontier AI reasoning requires $100M compute clusters was just proven wrong.\n\nDeepSeek-R1 open weights match o1 on math benchmarks at 95% lower training cost.\n\nHere's what actually changed under the hood:`,
+          `2/ Most coverage focuses on the benchmark scores (79.8% AIME 2024).\n\nWhat matters is the training mechanism: DeepSeek-R1-Zero was trained via pure reinforcement learning directly on the base model without initial supervised fine-tuning.`,
+          `3/ This means reasoning behaviors (reflection, self-correction, chain-of-thought verification) emerged spontaneously from reward incentives rather than human imitation.`,
+          `4/ The architectural lever: Multi-head Latent Attention (MLA). By projecting keys and values into low-dimensional latent space, KV cache footprint is slashed by 93%.\n\nThis makes long-chain reasoning feasible on modest hardware.`,
+          `5/ Distillation was the final shock: they distilled R1 reasoning directly into standard Llama and Qwen architectures (1.5B to 70B).\n\nA 1.5B model now solves Olympiad math problems on an iPhone.`,
+          `6/ Caveat: synthetic reasoning chains can exhibit reward hacking on complex edge cases. Distillation does not guarantee generalization outside the verification domain.`,
+          `7/ But for developers, the takeaway is clear: reasoning tokens are commoditized. The value shifts up the stack to deterministic tool contracts and verification harnesses.`
+        ]
+      },
+      x_hooks: [
+        { category: "Contrarian", text: "The narrative that frontier AI reasoning requires $100M compute clusters was just proven wrong.", hook_score: 95, curiosity: 92, specificity: 94, novelty: 95, clarity: 96, scroll_stop_potential: 96, credibility: 95, conversation_potential: 94 },
+        { category: "Data Driven", text: "95% lower training cost. 79.8% on AIME. MIT license. The numbers behind DeepSeek-R1.", hook_score: 92, curiosity: 88, specificity: 98, novelty: 90, clarity: 95, scroll_stop_potential: 91, credibility: 98, conversation_potential: 90 },
+        { category: "Builder", text: "We ran distilled 1.5B R1 on local Apple Silicon. Here is the token latency and accuracy tradeoff.", hook_score: 90, curiosity: 94, specificity: 92, novelty: 89, clarity: 92, scroll_stop_potential: 90, credibility: 94, conversation_potential: 92 }
+      ],
+      linkedin_content: {
+        content: `A significant paradigm shift occurred in the AI industry today with the open weights release of DeepSeek-R1.\n\nFor enterprise technology leaders, the strategic takeaways transcend benchmark comparisons:\n\n1. The Capital Expenditure Narrative Is Broken\nFrontier reasoning capabilities were achieved using pure reinforcement learning at a fraction of hyperscaler capital expenditure. This challenges the assumption that only trillion-dollar balance sheets can produce state-of-the-art models.\n\n2. Open Weights Drive True Edge Economics\nWith permissive MIT licensing and distilled models down to 1.5B parameters, enterprise reasoning pipelines can now run on-premise without vendor lock-in or data exfiltration risks.\n\n3. Value Accrues to the Verification Layer\nAs reasoning tokens become commoditized, differentiation lies not in model weights, but in domain-specific ground-truth verification harnesses and deterministic agent runtime architectures.\n\nHow is your organization evaluating the balance between proprietary hosted APIs and self-hosted open reasoning models?`
+      },
+      instagram_carousel: {
+        slides: [
+          { slide_number: 1, title: "The $6M Model That Shocked AI", body: "DeepSeek-R1 matched the world's best reasoning AI — and made the weights completely open.", visual_note: "High contrast dark typography with glowing teal border." },
+          { slide_number: 2, title: "How It Works: Pure RL", body: "No massive human feedback. The AI taught itself to reflect, check its work, and correct mistakes through mathematical reinforcement.", visual_note: "Node tree showing branching thought paths." },
+          { slide_number: 3, title: "93% Smaller Memory", body: "Multi-Head Latent Attention compresses the memory footprint so it runs on standard hardware.", visual_note: "Comparative bar chart showing memory reduction." },
+          { slide_number: 4, title: "Reasoning On Your Phone", body: "Distilled down to 1.5B parameters. Complex mathematical problem solving now runs locally on consumer devices.", visual_note: "Phone mockup showing local offline execution." },
+          { slide_number: 5, title: "What This Means For You", body: "1. Zero API lock-in\n2. 90%+ cost reduction\n3. Private local intelligence\n\nSave this post to reference the architecture breakdown.", visual_note: "Clean checklist with action icons." }
+        ]
+      },
+      instagram_reel: {
+        script: "Hook: Everyone thought frontier AI reasoning would cost billions forever. They were wrong. Today, DeepSeek released R1 with open weights under an MIT license. It matches OpenAI o1 on math benchmarks, but was trained for under $6 million using pure reinforcement learning. Here is the wild part: they distilled it into a 1.5 billion parameter model you can run locally on your laptop with zero internet. The AI landscape just changed forever."
+      },
+      youtube_content: {
+        titles: [
+          "DeepSeek-R1 Explained: Why Open Weights Just Won the Reasoning Race",
+          "How DeepSeek Built an o1 Rival for $6M (Pure RL Architecture Deep Dive)",
+          "I Tested DeepSeek-R1 Locally: Math Benchmarks, Latency & Code Generation",
+          "The Paper Nobody Read: How Pure RL Changes Everything in AI",
+          "Open Weights vs OpenAI: The Real Technical Breakdown of DeepSeek-R1"
+        ],
+        thumbnails: [
+          { title: "THE $6M REASONING SHOCK", visual_concept: "Split comparison between massive $100M server farm and single glowing chip die.", badge_text: "FULL ARCHITECTURE" },
+          { title: "OPEN WEIGHTS WON", visual_concept: "Dramatic dark terminal showing 'git clone' with AIME 79.8% benchmark stamp in neon green.", badge_text: "79.8% AIME" },
+          { title: "PURE RL EXPLAINED", visual_concept: "Branching neural tree showing autonomous self-reflection tokens unfolding in real time.", badge_text: "NO HUMAN DATA" }
+        ],
+        script: "Cold Open: The biggest assumption in modern artificial intelligence was that frontier reasoning required billions in capital and thousands of human annotators. In the last 24 hours, that assumption was completely shattered. Welcome back to the terminal. Today, we're dissecting DeepSeek-R1...",
+        pinned_comment: "Question for the community: Will your team migrate reasoning workloads to local open-weights models this year, or stay on hosted APIs? Let's discuss the latency vs maintenance tradeoff below."
+      }
+    },
+    video_package: createMockVideoPackage(title),
+    publishing: {
+      x: {
+        text: "The narrative that frontier AI reasoning requires $100M compute clusters was just proven wrong.",
+        thread: ["1/ DeepSeek-R1 release breakdown...", "2/ Pure RL mechanics..."],
+        top_hook: "The narrative that frontier AI reasoning requires $100M compute clusters was just proven wrong.",
+        hashtags: []
+      },
+      linkedin: {
+        text: "A significant paradigm shift occurred in the AI industry today...",
+        cta: "How is your organization evaluating open reasoning models?",
+        hashtags: ["#ArtificialIntelligence", "#TechStrategy", "#SoftwareEngineering"]
+      },
+      instagram: {
+        carousel_slides: [
+          { slide_number: 1, title: "The $6M Model That Shocked AI", body: "DeepSeek-R1 matched the world's best reasoning AI." }
+        ],
+        reel_script: "Everyone thought frontier AI reasoning would cost billions forever...",
+        caption: "DeepSeek-R1 architecture breakdown and developer impact. Save for reference.",
+        hashtags: ["#AI", "#TechNews", "#SoftwareEngineering", "#DeepLearning"]
+      },
+      youtube: {
+        titles: ["DeepSeek-R1 Explained: Why Open Weights Just Won the Reasoning Race"],
+        thumbnail_concepts: [{ title: "THE $6M REASONING SHOCK", visual_concept: "Split comparison" }],
+        script: "Cold Open: The biggest assumption in modern artificial intelligence was...",
+        pinned_comment: "Which aspect of this model architecture do you think will have the biggest impact?"
+      }
+    },
+    quality_summary: {
+      content_quality: {
+        total_quality_score: 93.5,
+        fact_check_score: 96.0,
+        originality_score: 94.0
+      },
+      video_quality: {
+        video_prompt_readiness_score: 95.0,
+        is_production_ready: true
+      }
+    }
+  };
+}
+
+

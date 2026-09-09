@@ -229,7 +229,12 @@ class TrendStrategy(Base):
 
 class ContentPerformance(Base):
     """
-    Historical user content performance tracking for personalized opportunity scoring.
+    Real-world outcome of one published piece — North Star §12.2.
+
+    `lifecycle_id` / `event_id` are what make the causal chain
+    (EVENT -> OPPORTUNITY -> CONTENT -> VIDEO -> PUBLISH -> PERFORMANCE) queryable.
+    They are nullable on purpose: a manually logged post with no traced origin is still
+    a valid measurement, it just cannot be attributed back to an event.
     """
     __tablename__ = "content_performance"
 
@@ -239,12 +244,78 @@ class ContentPerformance(Base):
     angle = Column(String(255), nullable=True)
     hook = Column(String(100), nullable=True)
     format = Column(String(50), default="single_post")
+    platform = Column(String(30), nullable=True)
     published_at = Column(DateTime, default=datetime.utcnow)
+
+    # Causal attribution (all nullable — absence means "origin unknown", never zero)
+    lifecycle_id = Column(String(36), ForeignKey("content_lifecycles.id"), nullable=True, index=True)
+    event_id = Column(String(36), nullable=True, index=True)
+    variant_id = Column(String(36), nullable=True)
+    video_prompt_id = Column(String(36), nullable=True)
+
+    # Reach & engagement (§12.2)
+    impressions = Column(Integer, nullable=True)
     views = Column(Integer, nullable=True)
     likes = Column(Integer, nullable=True)
     reposts = Column(Integer, nullable=True)
     replies = Column(Integer, nullable=True)
+    bookmarks = Column(Integer, nullable=True)
+    watch_time_seconds = Column(Float, nullable=True)
+    completion_rate = Column(Float, nullable=True)
+    ctr = Column(Float, nullable=True)
+    follower_delta = Column(Integer, nullable=True)
     engagement_rate = Column(Float, nullable=True)
+
+    lifecycle = relationship("ContentLifecycle", back_populates="performance")
+
+
+class ContentLifecycle(Base):
+    """
+    One row per piece of content moving through the North Star funnel (§17.1).
+
+    Each timestamp is written only when the stage actually happens, so a NULL means
+    "has not happened" and never "happened at zero". `time_to_publishable_seconds` is
+    derived, not declared — see NorthStarMetricService.
+    """
+    __tablename__ = "content_lifecycles"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    creator_id = Column(String(36), default="default", index=True)
+    event_id = Column(String(36), ForeignKey("events.id"), nullable=True, index=True)
+    topic = Column(String(255), nullable=True)
+    platform = Column(String(30), nullable=True)
+    content_format = Column(String(50), nullable=True)
+    angle = Column(String(255), nullable=True)
+    stage = Column(String(40), default="EVENT_DETECTED", index=True)
+
+    # Funnel timestamps — §17.1
+    event_occurred_at = Column(DateTime, nullable=True)
+    event_detected_at = Column(DateTime, nullable=True)
+    opportunity_identified_at = Column(DateTime, nullable=True)
+    content_created_at = Column(DateTime, nullable=True)
+    video_produced_at = Column(DateTime, nullable=True)
+    quality_approved_at = Column(DateTime, nullable=True)
+    published_at = Column(DateTime, nullable=True)
+
+    # Derived outcome
+    time_to_publishable_seconds = Column(Float, nullable=True)
+
+    # The six quality scores stay SEPARATE (§11.1). Stored as a JSON object keyed by
+    # dimension so no code path can average them into one misleading number.
+    quality_gate = Column(JSON, default=dict)
+
+    # Why this piece was recommended, captured at decision time (provenance for §12).
+    recommendation_snapshot = Column(JSON, default=dict)
+    abandoned_reason = Column(Text, nullable=True)
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    event = relationship("Event", foreign_keys=[event_id])
+    performance = relationship("ContentPerformance", back_populates="lifecycle")
+
+
+Index("ix_lifecycle_stage_published", ContentLifecycle.stage, ContentLifecycle.published_at)
 
 
 class Analysis(Base):

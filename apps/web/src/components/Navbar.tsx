@@ -4,7 +4,7 @@ import {
   Zap, Activity, Share2, Sparkles, SlidersHorizontal, Film
 } from "lucide-react";
 
-export type V3NavTab = "radar" | "news" | "graph" | "opportunities" | "video" | "voice" | "saved";
+export type V3NavTab = "today" | "radar" | "news" | "graph" | "opportunities" | "video" | "voice" | "saved";
 
 interface NavbarProps {
   activeTab: V3NavTab;
@@ -12,6 +12,7 @@ interface NavbarProps {
   savedCount: number;
   onRefresh: () => void;
   onWhatShouldIPost: () => void;
+  onOpenFunnel?: () => void;
   isRefreshing: boolean;
 }
 
@@ -21,6 +22,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   savedCount,
   onRefresh,
   onWhatShouldIPost,
+  onOpenFunnel,
   isRefreshing,
 }) => {
   return (
@@ -45,6 +47,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Center Navigation Tabs */}
         <div className="flex items-center space-x-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800 overflow-x-auto text-xs">
+          <button
+            onClick={() => setActiveTab("today")}
+            className={`px-3 py-1.5 rounded-lg font-mono font-semibold flex items-center space-x-1.5 transition ${
+              activeTab === "today"
+                ? "bg-amber-500 text-black shadow-md shadow-amber-500/20 font-bold"
+                : "text-amber-400/90 hover:text-amber-300 hover:bg-amber-500/10"
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Today's Post</span>
+          </button>
+
           <button
             onClick={() => setActiveTab("radar")}
             className={`px-3 py-1.5 rounded-lg font-mono font-semibold flex items-center space-x-1.5 transition ${
@@ -135,8 +149,19 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         </div>
 
-        {/* Action Button: WHAT SHOULD I POST? */}
+        {/* Action Button: WHAT SHOULD I POST? & Funnel Telemetry */}
         <div className="flex items-center space-x-2 shrink-0">
+          {onOpenFunnel && (
+            <button
+              onClick={onOpenFunnel}
+              className="hidden md:flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-mono text-cyan-300 bg-cyan-950/40 border border-cyan-500/30 hover:border-cyan-500/60 transition cursor-pointer"
+              title="North Star Metric: Time to High-Quality Publishable Content"
+            >
+              <Activity className="w-3.5 h-3.5 text-cyan-400" />
+              <span>42m Funnel</span>
+            </button>
+          )}
+
           <button
             onClick={onWhatShouldIPost}
             className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-black bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 shadow-md transition cursor-pointer"
