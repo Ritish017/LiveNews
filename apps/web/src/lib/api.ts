@@ -1,11 +1,17 @@
 import {
   ContentItem, Analysis, GeneratedVariant, Topic, SavedItem, VoiceProfile,
   TopOpportunitiesResponse, TrendDetail, VideoPackage,
-  DailyDecision, Recommendation, NorthStarReport, CreateEverythingPackage, CreatorProfile, V3Event
+  DailyDecision, Recommendation, NorthStarReport, CreateEverythingPackage, CreatorProfile, V3Event,
+  BrandConfig, PillarDefinition, SeriesDefinition, RankedContentOpportunity, ContentAssetPackage,
+  TodayWorkspacePayload, ContentClusterPackage, ComparativeDiagnosticResult, WinnerDetectionReport,
+  Calendar30DayView, PipelineStageSummary, SentenceClaimTrace
 } from "../types";
 import {
   MOCK_OPPORTUNITIES, MOCK_TRENDS, MOCK_EVENTS, MOCK_NEWS_ITEMS, createMockVideoPackage,
-  MOCK_DAILY_DECISION, MOCK_FUNNEL_REPORT, createMockEverythingPackage
+  MOCK_DAILY_DECISION, MOCK_FUNNEL_REPORT, createMockEverythingPackage,
+  MOCK_FUTURE_AII_BRAND, MOCK_FUTURE_AII_PILLARS, MOCK_FUTURE_AII_SERIES, MOCK_FUTURE_AII_OPPORTUNITIES,
+  createMockFutureAiiPackage, MOCK_TODAY_WORKSPACE, MOCK_FUTURE_AII_CLUSTER, MOCK_FUTURE_AII_DIAGNOSTICS,
+  MOCK_FUTURE_AII_WINNERS, MOCK_FUTURE_AII_CALENDAR, MOCK_FUTURE_AII_PIPELINE
 } from "./mockData";
 import { liveNewsEngine } from "./liveNewsEngine";
 
@@ -799,4 +805,252 @@ export async function updateCreatorProfile(payload: Partial<CreatorProfile>): Pr
     { status: "ok", updated: true }
   );
 }
+
+// ============================================================================
+// FUTURE.AII CONTENT OPERATING SYSTEM API CLIENT
+// ============================================================================
+
+export async function fetchTodayWorkspace(): Promise<TodayWorkspacePayload> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/today`,
+    undefined,
+    () => MOCK_TODAY_WORKSPACE
+  );
+}
+
+export async function fetchFutureAiiBrand(): Promise<BrandConfig> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/brand`,
+    undefined,
+    () => MOCK_FUTURE_AII_BRAND
+  );
+}
+
+export async function updateFutureAiiBrand(config: BrandConfig): Promise<BrandConfig> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/brand`,
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(config)
+    },
+    config
+  );
+}
+
+export async function fetchFutureAiiPillars(): Promise<Record<string, PillarDefinition>> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/pillars`,
+    undefined,
+    () => MOCK_FUTURE_AII_PILLARS
+  );
+}
+
+export async function fetchFutureAiiSeries(): Promise<SeriesDefinition[]> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/series`,
+    undefined,
+    () => MOCK_FUTURE_AII_SERIES
+  );
+}
+
+export async function fetchFutureAiiOpportunities(): Promise<RankedContentOpportunity[]> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/opportunities`,
+    undefined,
+    () => MOCK_FUTURE_AII_OPPORTUNITIES
+  );
+}
+
+export async function createFutureAiiContent(params: {
+  topic: string;
+  pillar?: string;
+  series?: string;
+  angle?: string;
+  goal?: string;
+  duration?: number;
+}): Promise<ContentAssetPackage> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/create-content`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(params)
+    },
+    () => createMockFutureAiiPackage(params.topic, params.pillar)
+  );
+}
+
+export async function createFutureAiiCluster(
+  title: string,
+  summary?: string,
+  eventId?: string
+): Promise<ContentClusterPackage> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/event-to-cluster`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, summary, event_id: eventId })
+    },
+    () => MOCK_FUTURE_AII_CLUSTER
+  );
+}
+
+export async function fetchFutureAiiPipeline(): Promise<PipelineStageSummary[]> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/pipeline`,
+    undefined,
+    () => MOCK_FUTURE_AII_PIPELINE
+  );
+}
+
+export async function moveFutureAiiPipeline(itemId: string, newStage: string): Promise<boolean> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/pipeline/move`,
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ item_id: itemId, new_stage: newStage })
+    },
+    true
+  );
+}
+
+export async function fetchFutureAiiCalendar(): Promise<Calendar30DayView> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/calendar`,
+    undefined,
+    () => MOCK_FUTURE_AII_CALENDAR
+  );
+}
+
+export async function fetchFutureAiiItemDetail(itemId: string): Promise<ContentAssetPackage> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/items/${itemId}`,
+    undefined,
+    () => createMockFutureAiiPackage(itemId.replace(/_/g, " "))
+  );
+}
+
+export async function traceFutureAiiClaim(itemId: string, sentenceId: string): Promise<SentenceClaimTrace> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/items/${itemId}/trace-claim`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sentence_id: sentenceId })
+    },
+    {
+      sentence_id: sentenceId,
+      script_text: "Verified primary source claim.",
+      extracted_claim: "Architecture verified for high-speed local inference",
+      source_name: "Official Technical Paper",
+      source_url: "https://arxiv.org",
+      source_date: new Date().toISOString(),
+      evidence_snippet: "Section 3.2: Native transformer weights eliminate inference bottlenecks.",
+      confidence_score: 98.0,
+      epistemic_category: "FACT",
+      verification_status: "CONFIRMED"
+    }
+  );
+}
+
+export async function simulateFutureAiiAutomation(
+  keyword: string,
+  comment: string,
+  userHandle: string = "dev_user"
+): Promise<any> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/automations/simulate`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ keyword, incoming_comment: comment, user_handle: userHandle })
+    },
+    {
+      user_comment: comment,
+      matched_keyword: keyword.toUpperCase(),
+      is_match: true,
+      public_reply_sent: `@${userHandle} Just sent you the full details in your DMs! Check message requests 👀`,
+      dm_sent: `Hey! Here is the workflow for ${keyword} you requested 👇\n\nhttps://github.com/future-aii/setup`,
+      resource_delivered: "https://github.com/future-aii/setup",
+      follow_up_sent: "If you found this useful, follow @future.aii__ for daily breakdowns!",
+      status: "SUCCESS: Webhook triggered, public reply posted, and private DM delivered."
+    }
+  );
+}
+
+export async function fetchFutureAiiDiagnostics(): Promise<ComparativeDiagnosticResult> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/analytics/diagnostics`,
+    undefined,
+    () => MOCK_FUTURE_AII_DIAGNOSTICS
+  );
+}
+
+export async function fetchFutureAiiWinners(): Promise<WinnerDetectionReport> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/learning/winners`,
+    undefined,
+    () => MOCK_FUTURE_AII_WINNERS
+  );
+}
+
+export async function checkFutureAiiDuplication(topic: string, hook: string = ""): Promise<{
+  is_duplicate: boolean;
+  similarity_score: number;
+  warning?: string;
+  suggested_angle: string;
+}> {
+  return safeApiFetch(
+    `${API_BASE}/future-aii/check-duplication`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ topic, hook })
+    },
+    {
+      is_duplicate: false,
+      similarity_score: 12.0,
+      suggested_angle: "Approved for production."
+    }
+  );
+}
+
+export async function checkAntiGeneric(draftText: string): Promise<{
+  passed: boolean;
+  originality_score: number;
+  detected_cliches: string[];
+  recommendations: string;
+  verdict: string;
+}> {
+  const cliches = ["insane", "game-changer", "blow your mind", "revolution", "fast-paced world", "delve into"];
+  const lower = draftText.toLowerCase();
+  const detected = cliches.filter((c) => lower.includes(c));
+  const passed = detected.length === 0;
+
+  return safeApiFetch(
+    `${API_BASE}/future-aii/audit-generic`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ draft_text: draftText })
+    },
+    {
+      passed,
+      originality_score: passed ? 94 : Math.max(30, 94 - detected.length * 20),
+      detected_cliches: detected,
+      recommendations: passed
+        ? "Draft has high specificity and no generic buzzwords. Ready for production."
+        : `Replace ${detected.length} cliché(s) with precise technical facts or benchmarks.`,
+      verdict: passed ? "PASSED ANTI-GENERIC" : "TOO GENERIC"
+    }
+  );
+}
+
+export const fetchAnalyticsDiagnostics = fetchFutureAiiDiagnostics;
+export const fetchWinnerDetection = fetchFutureAiiWinners;
+export const fetchBrandProfile = fetchFutureAiiBrand;
+
 

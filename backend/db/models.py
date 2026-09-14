@@ -715,3 +715,206 @@ class VideoHumanFeedbackModel(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
+# =========================================================================
+# FUTURE.AII CONTENT OPERATING SYSTEM MODELS
+# =========================================================================
+
+class BrandProfileModel(Base):
+    """
+    Brand identity, visual DNA, and strategic voice profile for future.aii__.
+    """
+    __tablename__ = "brand_profiles"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    handle = Column(String(100), unique=True, default="future.aii__", index=True)
+    brand_name = Column(String(100), default="future.aii")
+    positioning = Column(String(255), default="Your window into the AI future.")
+    tone = Column(String(255), default="curious, fast, confident, technical but accessible")
+    visual_style = Column(String(255), default="dark, cinematic, high-contrast, modern, internet-native")
+    audience_demographics = Column(JSON, default=lambda: {
+        "primary_age": "18-30",
+        "segments": ["students", "developers", "creators", "entrepreneurs", "freelancers", "AI enthusiasts"]
+    })
+    pillar_targets = Column(JSON, default=lambda: {
+        "AI News": 25,
+        "AI Explained": 20,
+        "AI Tools": 15,
+        "AI For Normal People": 10,
+        "AGI / ASI / Future": 10,
+        "AI Memes / Relatable": 10,
+        "AI Experiments": 10
+    })
+    voice_guidelines = Column(JSON, default=lambda: {
+        "vocabulary": ["frontier", "compute", "inference", "agentic", "architecture", "breakthrough"],
+        "sentence_length": "fast-paced, punchy, active voice, 8-15 words average",
+        "banned_cliches": ["game-changer", "unleash", "mind-blowing", "dive deep", "in this digital era", "delve"],
+        "recurring_phrases": ["Here is what actually changed", "Your window into the AI future", "What developers can build with this"],
+        "hook_style": "curiosity + high specificity + immediate visual contrast"
+    })
+    anti_generic_rules = Column(JSON, default=lambda: [
+        "Never repost 'Company X announced Y' without explaining what actually changed and why it matters.",
+        "Detect technical jargon and automatically produce plain-English analogies.",
+        "Separate FACT from INTERPRETATION from PREDICTION.",
+        "Every Reel must provide a verifiable workflow or takeaway, not just surface marketing claims."
+    ])
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class SeriesModel(Base):
+    """
+    Recurring branded series engine for future.aii__.
+    """
+    __tablename__ = "content_series"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    name = Column(String(100), unique=True, nullable=False, index=True)
+    pillar = Column(String(100), nullable=False, index=True)
+    description = Column(Text, nullable=False)
+    cadence = Column(String(50), default="daily")  # daily, 3x_weekly, weekly
+    target_format = Column(String(50), default="Reel")  # Reel, Carousel, Story, Short
+    average_retention = Column(Float, default=78.5)
+    average_shares = Column(Float, default=85.0)
+    is_active = Column(Boolean, default=True)
+    template_structure = Column(JSON, default=dict)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class ContentOSItemModel(Base):
+    """
+    Master Content Object Model (§66 & §67) connecting the entire lifecycle:
+    Research -> Brief -> Hooks -> Script -> Visuals -> Prompts -> Remotion ->
+    Automation -> Distribution -> Published Post -> Analytics -> Learning.
+    """
+    __tablename__ = "content_os_items"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    brand_handle = Column(String(100), default="future.aii__", index=True)
+    pillar = Column(String(100), nullable=False, index=True)
+    series = Column(String(100), nullable=False, index=True)
+    topic = Column(String(512), nullable=False)
+    event_id = Column(String(36), ForeignKey("events.id", ondelete="SET NULL"), nullable=True, index=True)
+    cluster_id = Column(String(36), nullable=True, index=True)
+    cluster_role = Column(String(100), nullable=True)  # Breaking Reel, Explainer, Tool Demo, Meme, Carousel, Story, X Post, YouTube Short
+    
+    # Strategy
+    goal = Column(String(100), default="Reach & Follows")  # Reach, Followers, Saves, Shares, Comments, Authority
+    audience = Column(String(255), default="Developers & AI Builders")
+    platform = Column(String(50), default="Instagram")
+    format = Column(String(50), default="Reel")  # Reel, Carousel, Story, Meme, Post, Short
+    angle = Column(Text, nullable=False)
+    status = Column(String(50), default="IDEA", index=True)  # IDEA, RESEARCHING, BRIEF_READY, SCRIPT_READY, CREATIVE_READY, PRODUCTION, EDITING, REVIEW, READY_TO_POST, SCHEDULED, PUBLISHED, ANALYZING, LEARNED
+    priority = Column(String(20), default="HIGH")
+
+    # Research & Grounding
+    research_data = Column(JSON, default=dict)  # { "sources": [...], "confirmed_claims": [...], "confidence": 98.0 }
+    
+    # Creative Engine Outputs
+    hook_candidates = Column(JSON, default=list)  # 10 hooks with 7-criteria scores
+    selected_hook = Column(Text, nullable=True)
+    script_data = Column(JSON, default=dict)  # Timestamped cues: voice, visual, on_screen_text, sfx, camera
+    duration_seconds = Column(Integer, default=30)
+    
+    # Visual Plan & Prompts
+    visual_plan = Column(JSON, default=dict)  # shot_list, representation_type, remotion_code, ai_prompts
+    
+    # Copy & CTA
+    caption = Column(Text, nullable=True)
+    hashtags = Column(JSON, default=list)
+    cta = Column(Text, nullable=True)
+    cta_type = Column(String(50), default="DM_Resource")  # Follow, Save, Share, Comment, DM_Resource, Discussion, Series
+
+    # Comment -> DM Automation (§15 & §17)
+    comment_keyword = Column(String(50), nullable=True)
+    comment_public_reply = Column(Text, nullable=True)
+    dm_message = Column(Text, nullable=True)
+    dm_resource = Column(Text, nullable=True)
+    automation_status = Column(String(50), default="READY")
+
+    # Multi-format outputs
+    carousel_slides = Column(JSON, default=list)  # 5-12 structured slides
+    story_sequence = Column(JSON, default=list)  # interactive poll, quiz, result
+    x_post = Column(Text, nullable=True)
+    youtube_short = Column(Text, nullable=True)
+
+    # Quality Gate & Readiness
+    quality_scores = Column(JSON, default=dict)  # 10 dimensions: hook, story, value, originality, visual, platform, brand, etc.
+    is_ready_to_post = Column(Boolean, default=False)
+    
+    # Distribution Lifecycle
+    scheduled_at = Column(DateTime, nullable=True)
+    published_at = Column(DateTime, nullable=True)
+    post_url = Column(String(1024), nullable=True)
+    
+    # Analytics & Telemetry
+    performance_metrics = Column(JSON, default=dict)  # views, reach, likes, comments, shares, saves, watch_time, completion, follows
+    learning_notes = Column(Text, nullable=True)
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    __table_args__ = (
+        Index("idx_content_os_status", "status", "created_at"),
+        Index("idx_content_os_pillar", "pillar", "series"),
+    )
+
+
+class CommentDMAutomationModel(Base):
+    """
+    Comment-to-DM automated engagement engine rule.
+    """
+    __tablename__ = "comment_dm_automations"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    content_id = Column(String(36), ForeignKey("content_os_items.id", ondelete="CASCADE"), nullable=True)
+    trigger_keyword = Column(String(50), nullable=False, index=True)
+    match_type = Column(String(20), default="EXACT")  # EXACT, WORD, FLEXIBLE
+    public_reply = Column(Text, nullable=False)
+    dm_message = Column(Text, nullable=False)
+    resource_type = Column(String(50), default="PROMPT")  # PROMPT, LINK, CHEATSHEET, GUIDE, CODE
+    resource_url_or_payload = Column(Text, nullable=False)
+    followup_message = Column(Text, nullable=True)
+    status = Column(String(20), default="ACTIVE")  # DRAFT, READY, ACTIVE, PAUSED
+    trigger_count = Column(Integer, default=0)
+    dm_sent_count = Column(Integer, default=0)
+    conversion_count = Column(Integer, default=0)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class ContentCalendarEntryModel(Base):
+    """
+    30-Day Dynamic Content Calendar slot for future.aii__.
+    """
+    __tablename__ = "content_calendar_slots"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    date_str = Column(String(20), nullable=False, index=True)  # YYYY-MM-DD
+    time_slot = Column(String(20), default="19:30")
+    content_id = Column(String(36), ForeignKey("content_os_items.id", ondelete="SET NULL"), nullable=True)
+    pillar = Column(String(100), nullable=False)
+    series = Column(String(100), nullable=False)
+    format = Column(String(50), default="Reel")
+    title = Column(String(512), nullable=False)
+    status = Column(String(50), default="SCHEDULED")  # SCHEDULED, PUBLISHED, DRAFT
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class AudienceCommentSignalModel(Base):
+    """
+    Audience comments and requests mined from Instagram for organic content ideation.
+    """
+    __tablename__ = "audience_comment_signals"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    post_id = Column(String(100), nullable=True)
+    comment_text = Column(Text, nullable=False)
+    author_handle = Column(String(100), nullable=True)
+    category = Column(String(50), default="QUESTION")  # QUESTION, CONFUSION, REQUEST, OBJECTION, FAQ
+    extracted_topic = Column(String(255), nullable=False)
+    frequency_count = Column(Integer, default=1)
+    converted_to_opportunity = Column(Boolean, default=False)
+    opportunity_id = Column(String(36), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+

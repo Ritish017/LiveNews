@@ -1005,5 +1005,499 @@ export interface CreatorProfile {
   content_style_notes?: string;
 }
 
+// =========================================================================
+// FUTURE.AII CONTENT OPERATING SYSTEM TYPES
+// =========================================================================
 
+export interface BrandConfig {
+  handle: string;
+  brand_name: string;
+  positioning: string;
+  tone: string;
+  visual_style: string;
+  audience_demographics: {
+    primary_age: string;
+    segments: string[];
+  };
+  pillar_targets: Record<string, number>;
+  voice_guidelines: {
+    vocabulary: string[];
+    sentence_length: string;
+    banned_cliches: string[];
+    recurring_phrases: string[];
+    hook_style: string;
+  };
+  anti_generic_rules: string[];
+}
 
+export interface PillarDefinition {
+  id: string;
+  name: string;
+  target_share_pct: number;
+  objective: string;
+  format_structure: string[];
+  default_formats: string[];
+  cta_patterns: string[];
+  prompt_instructions: string;
+}
+
+export interface SeriesDefinition {
+  id: string;
+  name: string;
+  pillar: string;
+  cadence: string;
+  target_format: string;
+  description: string;
+  hook_formula: string;
+  average_retention: number;
+  average_shares: number;
+  is_active: boolean;
+}
+
+export interface OpportunityScoreBreakdown {
+  total_opportunity_score: number;
+  freshness: number;
+  momentum: number;
+  relevance: number;
+  audience_fit: number;
+  competition: number;
+  saturation: number;
+  novelty: number;
+  content_gap: number;
+  creator_fit: number;
+  historical_performance: number;
+  production_difficulty: number;
+  urgency: "POST_NOW" | "POST_TODAY" | "POST_THIS_WEEK" | "WATCH" | "SKIP";
+  urgency_reason: string;
+  recommended_pillar: string;
+  recommended_series: string;
+  recommended_format: string;
+  recommended_angle: string;
+}
+
+export interface RankedContentOpportunity {
+  id: string;
+  event_id?: string;
+  title: string;
+  summary: string;
+  primary_source: string;
+  scores: OpportunityScoreBreakdown;
+  entities: string[];
+  key_claims: string[];
+  alternative_angles: string[];
+  created_at: string;
+}
+
+export interface HookEvaluation {
+  category: string;
+  text: string;
+  composite_score: number;
+  curiosity: number;
+  clarity: number;
+  novelty: number;
+  relevance: number;
+  retention_potential: number;
+  credibility: number;
+  clickbait_risk: number;
+  tag?: "BEST" | "SAFE" | "HIGH_RISK" | null;
+}
+
+export interface HookSuite {
+  best_hook: HookEvaluation;
+  safe_hook: HookEvaluation;
+  high_risk_hook: HookEvaluation;
+  all_hooks: HookEvaluation[];
+}
+
+export interface ScriptSegment {
+  sentence_id: string;
+  time_start: number;
+  time_end: number;
+  phase: "HOOK" | "CONTEXT" | "PAYOFF" | "WHY_IT_MATTERS" | "CTA";
+  voice: string;
+  visual: string;
+  on_screen_text: string;
+  sfx: string;
+  camera: string;
+  underlying_claim?: string;
+}
+
+export interface ProductionScript {
+  duration_seconds: number;
+  pillar: string;
+  series: string;
+  hook_text: string;
+  cta_text: string;
+  total_words: number;
+  estimated_wpm: number;
+  segments: ScriptSegment[];
+  formatted_director_notes: string;
+}
+
+export interface CTASpec {
+  cta_type: string;
+  public_cta_text: string;
+  rationale: string;
+  has_deliverable_resource: boolean;
+  resource_keyword?: string;
+}
+
+export interface AutomationSpec {
+  id: string;
+  content_id?: string;
+  trigger_source: string;
+  keywords: string[];
+  match_type: "EXACT" | "WORD" | "FLEXIBLE";
+  public_reply_options: string[];
+  initial_dm: string;
+  resource_type: string;
+  resource_content: string;
+  follow_up_nudge?: string;
+  status: string;
+  analytics: {
+    trigger_count: number;
+    dm_sent_count: number;
+    reply_count: number;
+    conversion_count: number;
+  };
+}
+
+export interface CarouselSlide {
+  slide_number: number;
+  slide_role: string;
+  headline: string;
+  body_points: string[];
+  visual_layout: string;
+  typography_hierarchy: string;
+  diagram_spec?: string;
+  cta_badge?: string;
+}
+
+export interface CarouselSpec {
+  title: string;
+  pillar: string;
+  total_slides: number;
+  target_aspect_ratio: string;
+  slides: CarouselSlide[];
+  caption: string;
+  hashtags: string[];
+}
+
+export interface StoryItem {
+  story_number: number;
+  story_type: string;
+  headline: string;
+  subtext: string;
+  interactive_sticker: Record<string, any>;
+  background_visual: string;
+  cta_link_or_sticker?: string;
+}
+
+export interface StorySequenceSpec {
+  topic: string;
+  total_stories: number;
+  stories: StoryItem[];
+}
+
+export interface RemotionSpec {
+  composition_name: string;
+  duration_in_frames: number;
+  fps: number;
+  width: number;
+  height: number;
+  safe_zones: {
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+  };
+  copyable_react_code: string;
+  implementation_guide: string;
+}
+
+export interface SentenceClaimTrace {
+  sentence_id: string;
+  script_text: string;
+  extracted_claim: string;
+  source_name: string;
+  source_url: string;
+  source_date: string;
+  evidence_snippet: string;
+  confidence_score: number;
+  epistemic_category: "FACT" | "INTERPRETATION" | "PREDICTION";
+  verification_status: "CONFIRMED" | "UNVERIFIED" | "SPECULATIVE";
+}
+
+export interface FactAuditReport {
+  total_claims_analyzed: number;
+  confirmed_claims_count: number;
+  unverified_claims_count: number;
+  speculative_predictions_count: number;
+  overall_confidence: number;
+  is_fully_traceable: boolean;
+  sentence_traces: SentenceClaimTrace[];
+}
+
+export interface ContentAssetPackage {
+  content_id: string;
+  pillar: string;
+  series: string;
+  topic: string;
+  brand_handle: string;
+  status: string;
+  strategy: Record<string, any>;
+  research: Record<string, any>;
+  fact_audit: FactAuditReport;
+  hooks: HookSuite;
+  selected_hook: string;
+  script: ProductionScript;
+  shot_list: Array<{
+    shot_number: number;
+    time_range: string;
+    phase: string;
+    visual_description: string;
+    camera_motion: string;
+    sfx_cue: string;
+    on_screen_text: string;
+  }>;
+  visual_plan: Record<string, any>;
+  remotion_spec: RemotionSpec;
+  ai_video_prompts: Record<string, string>;
+  thumbnail_spec: Record<string, any>;
+  caption: string;
+  hashtags: string[];
+  cta_spec: CTASpec;
+  automation_spec?: AutomationSpec;
+  story_sequence: StorySequenceSpec;
+  carousel_spec: CarouselSpec;
+  x_post: string;
+  youtube_short: string;
+  quality_scores: Record<string, number>;
+  is_ready_to_post: boolean;
+  publishing_window: string;
+}
+
+export interface TodayWorkspacePayload {
+  greeting: string;
+  north_star_headline: string;
+  active_events_count: number;
+  top_opportunities: RankedContentOpportunity[];
+  star_opportunity: RankedContentOpportunity;
+  ready_content_packages: ContentAssetPackage[];
+  today_schedule_slots: Array<{
+    date_str: string;
+    day_of_week: string;
+    time_slot: string;
+    pillar: string;
+    series: string;
+    format: string;
+    title: string;
+    status: string;
+  }>;
+  engagement_tasks: Array<{
+    task: string;
+    status: string;
+    estimated_time: string;
+  }>;
+  yesterday_learnings: string[];
+  pillar_balance: Record<string, number>;
+}
+
+export interface ClusterPiece {
+  piece_id: string;
+  role: string;
+  format: string;
+  pillar: string;
+  series: string;
+  target_audience: string;
+  angle: string;
+  hook: string;
+  synopsis: string;
+  recommended_duration?: number;
+  cta: string;
+  comment_keyword?: string;
+  is_approved: boolean;
+}
+
+export interface ContentClusterPackage {
+  cluster_id: string;
+  event_id?: string;
+  event_title: string;
+  cluster_theme: string;
+  created_at: string;
+  pieces: ClusterPiece[];
+}
+
+export interface ComparativeDiagnosticResult {
+  post_a: {
+    id: string;
+    title: string;
+    views: number;
+    retention_rate: number;
+    share_rate: number;
+    save_rate: number;
+    hook_type: string;
+    duration_seconds: number;
+    cta_type: string;
+  };
+  post_b: {
+    id: string;
+    title: string;
+    views: number;
+    retention_rate: number;
+    share_rate: number;
+    save_rate: number;
+    hook_type: string;
+    duration_seconds: number;
+    cta_type: string;
+  };
+  winner_id: string;
+  performance_multiple: number;
+  differential_analysis: string[];
+  key_takeaway: string;
+  prescriptive_action: string;
+}
+
+export interface WinnerDetectionReport {
+  winning_hooks: Array<Record<string, any>>;
+  winning_topics: Array<Record<string, any>>;
+  winning_formats: Array<Record<string, any>>;
+  winning_pillars: Array<Record<string, any>>;
+  winning_series: Array<Record<string, any>>;
+  winning_ctas: Array<Record<string, any>>;
+  winning_visual_styles: Array<Record<string, any>>;
+  winning_durations: Array<Record<string, any>>;
+  generated_at: string;
+}
+
+export interface CalendarDaySlot {
+  date_str: string;
+  day_of_week: string;
+  time_slot: string;
+  pillar: string;
+  series: string;
+  format: string;
+  content_id?: string;
+  title?: string;
+  status: string;
+}
+
+export interface Calendar30DayView {
+  start_date: string;
+  end_date: string;
+  total_slots: number;
+  pillar_distribution: Record<string, number>;
+  target_distribution: Record<string, number>;
+  slots: CalendarDaySlot[];
+}
+
+export interface PipelineStageSummary {
+  stage: string;
+  count: number;
+  items: Array<Record<string, any>>;
+}
+
+export interface ContentOSItem {
+  id: string;
+  title: string;
+  brand?: string;
+  pillar: string;
+  series: string;
+  topic: string;
+  event_id?: string;
+  goal: string;
+  audience: string;
+  platform: string;
+  format: string;
+  angle: string;
+  research?: Record<string, any>;
+  sources?: Array<{
+    id?: string;
+    source_name: string;
+    url: string;
+    date?: string;
+    confidence?: number;
+  }>;
+  claims?: Array<{
+    claim_id: string;
+    claim: string;
+    source_name: string;
+    source_url: string;
+    confidence: number;
+  }>;
+  hook: string;
+  all_hooks?: Array<{
+    category: string;
+    text: string;
+    scores: Record<string, number>;
+    badge: string;
+  }>;
+  script: string;
+  script_cues?: Array<{
+    sentence_id: string;
+    time_start: number;
+    time_end: number;
+    phase: string;
+    voice: string;
+    visual: string;
+    on_screen_text: string;
+    sfx: string;
+    camera: string;
+    underlying_claim: string;
+  }>;
+  visual_plan?: {
+    format: string;
+    duration_seconds: number;
+    style: string;
+    color_palette: string[];
+    motion_intensity: string;
+    soundtrack: string;
+    remotion_ready: boolean;
+  };
+  remotion_code?: string;
+  caption?: string;
+  hashtags?: string[];
+  cta?: string;
+  comment_trigger?: string;
+  dm_automation?: {
+    trigger_type: string;
+    keywords: string[];
+    public_reply: string;
+    dm_text: string;
+    resource_url: string;
+    resource_name: string;
+    followup_nudge: string;
+  };
+  carousel_slides?: Array<{
+    slide_number: number;
+    role: string;
+    headline: string;
+    body: string;
+    visual_direction: string;
+    cta_text?: string;
+  }>;
+  story_sequence?: Array<{
+    story_number: number;
+    type: string;
+    title: string;
+    interactive_element: string;
+    options?: string[];
+    cta_text?: string;
+  }>;
+  x_post?: string;
+  youtube_short?: {
+    title: string;
+    hook: string;
+    script: string;
+    description: string;
+    tags: string[];
+  };
+  status?: string;
+  stage?: string;
+  quality_score?: number;
+  duplication_checked?: boolean;
+  created_at?: string;
+  published_at?: string;
+  performance?: Record<string, any>;
+  learning?: Record<string, any>;
+}

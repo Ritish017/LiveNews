@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from backend.config import settings
 from backend.db.session import init_db, AsyncSessionLocal
 from backend.api.v1 import router as api_router
+from backend.api.future_aii import router as future_aii_router
 from backend.providers.manager import provider_manager
 from backend.workers.scheduler import run_periodic_ingestion
 
@@ -40,9 +41,9 @@ async def lifespan(app: FastAPI):
     logger.info("Shutdown complete.")
 
 app = FastAPI(
-    title="AI Viral Radar API",
-    description="Discover viral AI content, analyze hook & virality dynamics, and synthesize original high-signal posts.",
-    version="1.0.0",
+    title="AI Viral Radar & FUTURE.AII Content OS API",
+    description="Dedicated Instagram Content Operating System for future.aii__ and AI Viral Radar Intelligence.",
+    version="3.5.0",
     lifespan=lifespan
 )
 
@@ -56,6 +57,8 @@ app.add_middleware(
 )
 
 app.include_router(api_router)
+app.include_router(future_aii_router)
+
 
 @app.get("/")
 async def root():

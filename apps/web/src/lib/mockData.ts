@@ -855,3 +855,657 @@ export function createMockEverythingPackage(title = "Suno Replaces AI Models wit
     }
   };
 }
+
+// ============================================================================
+// FUTURE.AII CONTENT OPERATING SYSTEM MOCK DATA
+// ============================================================================
+
+import {
+  BrandConfig, PillarDefinition, SeriesDefinition, RankedContentOpportunity,
+  ContentAssetPackage, TodayWorkspacePayload, ContentClusterPackage,
+  ComparativeDiagnosticResult, WinnerDetectionReport, Calendar30DayView,
+  PipelineStageSummary
+} from "../types";
+
+export const MOCK_FUTURE_AII_BRAND: BrandConfig = {
+  handle: "future.aii__",
+  brand_name: "future.aii",
+  positioning: "Your window into the AI future.",
+  tone: "curious, fast, confident, technical but accessible",
+  visual_style: "dark, cinematic, high-contrast, modern, internet-native",
+  audience_demographics: {
+    primary_age: "18-30",
+    segments: ["students", "developers", "creators", "entrepreneurs", "freelancers", "AI enthusiasts"]
+  },
+  pillar_targets: {
+    "AI News": 25,
+    "AI Explained": 20,
+    "AI Tools": 15,
+    "AI For Normal People": 10,
+    "AGI / ASI / Future": 10,
+    "AI Memes / Relatable": 10,
+    "AI Experiments": 10
+  },
+  voice_guidelines: {
+    vocabulary: ["frontier", "compute", "inference", "agentic", "architecture", "breakthrough", "latency", "weights"],
+    sentence_length: "fast-paced, punchy, active voice, 8-15 words average",
+    banned_cliches: ["game-changer", "unleash", "mind-blowing", "dive deep", "in this digital era", "delve"],
+    recurring_phrases: ["Here is what actually changed", "Your window into the AI future", "What developers can build with this"],
+    hook_style: "curiosity + high specificity + immediate visual contrast"
+  },
+  anti_generic_rules: [
+    "Never repost 'Company X announced Y' without explaining what actually changed and why it matters.",
+    "Detect technical jargon and automatically produce plain-English analogies.",
+    "Separate FACT from INTERPRETATION from PREDICTION.",
+    "Every Reel must provide a verifiable workflow or takeaway, not just surface marketing claims."
+  ]
+};
+
+export const MOCK_FUTURE_AII_PILLARS: Record<string, PillarDefinition> = {
+  "AI News": {
+    id: "pillar_news",
+    name: "AI News",
+    target_share_pct: 25,
+    objective: "Fast, understandable breakdown of major AI releases, breakthroughs, and corporate shifts.",
+    format_structure: ["HOOK", "WHAT HAPPENED", "WHAT ACTUALLY CHANGED", "WHY IT MATTERS", "WHAT THIS MEANS", "CTA"],
+    default_formats: ["Reel", "Carousel", "Story"],
+    cta_patterns: ["Follow for daily AI updates", "Would you deploy this?", "Save this breakdown"],
+    prompt_instructions: "Never simply repost announcements. Explain the architectural breakthrough."
+  },
+  "AI Explained": {
+    id: "pillar_explained",
+    name: "AI Explained",
+    target_share_pct: 20,
+    objective: "Turn complicated frontier AI concepts into visual, high-retention short-form education.",
+    format_structure: ["HOOK", "SIMPLE EXPLANATION", "VISUAL ANALOGY", "TECHNICAL CORE", "REAL EXAMPLE", "TAKEAWAY", "CTA"],
+    default_formats: ["Reel", "Carousel"],
+    cta_patterns: ["Comment 'CHEAT' for visual diagram", "Save for your next build"],
+    prompt_instructions: "Provide Beginner vs Technical versions with visual physical analogies."
+  },
+  "AI Tools": {
+    id: "pillar_tools",
+    name: "AI Tools",
+    target_share_pct: 15,
+    objective: "Make future.aii__ actionable with verified AI workflows and tools.",
+    format_structure: ["HOOK", "WHAT IT DOES", "WHO NEEDS IT", "ONE REAL WORKFLOW", "PRICING & LIMITS", "CTA"],
+    default_formats: ["Reel", "Carousel"],
+    cta_patterns: ["Comment 'TOOL' for link & prompt", "Save workflow"],
+    prompt_instructions: "Verify pricing and free tier. No marketing claims without testing."
+  },
+  "AI For Normal People": {
+    id: "pillar_normal",
+    name: "AI For Normal People",
+    target_share_pct: 10,
+    objective: "Expand beyond tech audiences by explaining AI with zero jargon.",
+    format_structure: ["HOOK", "EVERYDAY ANALOGY", "PLAIN-ENGLISH TRUTH", "PRACTICAL EXAMPLE", "CTA"],
+    default_formats: ["Reel", "Story"],
+    cta_patterns: ["Have you tried this yet?", "Share with a non-tech friend"],
+    prompt_instructions: "Replace jargon automatically with intuitive mental models."
+  },
+  "AGI / ASI / Future": {
+    id: "pillar_future",
+    name: "AGI / ASI / Future",
+    target_share_pct: 10,
+    objective: "Window into human-level AI and the technological horizon.",
+    format_structure: ["HOOK", "THE FACT", "THE INTERPRETATION", "THE PREDICTION", "CTA"],
+    default_formats: ["Reel", "Carousel"],
+    cta_patterns: ["Do you believe AGI arrives before 2028?", "Follow Road to AGI"],
+    prompt_instructions: "Strictly isolate FACT from INTERPRETATION from PREDICTION."
+  },
+  "AI Memes / Relatable": {
+    id: "pillar_memes",
+    name: "AI Memes / Relatable",
+    target_share_pct: 10,
+    objective: "Top of funnel acquisition layer driving reach and cultural awareness.",
+    format_structure: ["HOOK", "SETUP", "PUNCHLINE", "CTA"],
+    default_formats: ["Reel", "Story"],
+    cta_patterns: ["Tag a developer", "POV: agent running at 3 AM"],
+    prompt_instructions: "Keep it internet-native, concise, and fast-paced."
+  },
+  "AI Experiments": {
+    id: "pillar_experiments",
+    name: "AI Experiments",
+    target_share_pct: 10,
+    objective: "Hands-on empirical testing: USE AI rather than talk about AI.",
+    format_structure: ["QUESTION", "HYPOTHESIS", "SETUP", "TEST", "RESULT", "SURPRISE", "VERDICT", "CTA"],
+    default_formats: ["Reel", "Carousel", "YouTube Short"],
+    cta_patterns: ["Comment 'BENCHMARK' for prompts", "Which model won?"],
+    prompt_instructions: "Head-to-head empirical testing with reproducible prompts."
+  }
+};
+
+export const MOCK_FUTURE_AII_SERIES: SeriesDefinition[] = [
+  { id: "s1", name: "AI NEWS TODAY", pillar: "AI News", cadence: "daily", target_format: "Reel", description: "Daily recap of the #1 most critical AI development.", hook_formula: "This just happened in AI today: [Headline]", average_retention: 78.5, average_shares: 84.0, is_active: true },
+  { id: "s2", name: "BREAKING AI", pillar: "AI News", cadence: "urgent", target_format: "Reel", description: "Rapid response within 15 minutes of tier-1 frontier releases.", hook_formula: "Emergency release dropped 20 minutes ago: [Topic]", average_retention: 84.2, average_shares: 92.0, is_active: true },
+  { id: "s3", name: "AI IN 15 SECONDS", pillar: "AI Explained", cadence: "3x_weekly", target_format: "Reel", description: "Micro-explainer covering core architecture terms.", hook_formula: "If you don't understand [Concept] in 2026, watch this in 15 seconds.", average_retention: 82.4, average_shares: 88.0, is_active: true },
+  { id: "s4", name: "AI EXPLAINED", pillar: "AI Explained", cadence: "3x_weekly", target_format: "Carousel", description: "Visual slide-by-slide breakdowns with diagrams.", hook_formula: "How [Concept] actually works under the hood.", average_retention: 76.0, average_shares: 80.0, is_active: true },
+  { id: "s5", name: "AI TOOL YOU NEED", pillar: "AI Tools", cadence: "3x_weekly", target_format: "Reel", description: "One tool, one verified workflow, one exact prompt.", hook_formula: "Stop doing [Tedious Task] manually — this AI does it in 1 click.", average_retention: 79.1, average_shares: 91.0, is_active: true },
+  { id: "s6", name: "ROAD TO AGI", pillar: "AGI / ASI / Future", cadence: "2x_weekly", target_format: "Reel", description: "Tracking frontier milestones on the march toward AGI.", hook_formula: "We just took another step toward AGI — here is the milestone.", average_retention: 81.3, average_shares: 86.0, is_active: true },
+  { id: "s7", name: "AI VS AI", pillar: "AI Experiments", cadence: "2x_weekly", target_format: "Reel", description: "Head-to-head model benchmark challenges.", hook_formula: "GPT vs Claude vs Gemini: who builds a full app faster?", average_retention: 85.6, average_shares: 94.0, is_active: true },
+  { id: "s8", name: "AI POV", pillar: "AI Memes / Relatable", cadence: "2x_weekly", target_format: "Reel", description: "Short relatable creator & engineer humor.", hook_formula: "POV: you let the AI agent write the unit tests.", average_retention: 88.2, average_shares: 96.0, is_active: true }
+];
+
+export const MOCK_FUTURE_AII_OPPORTUNITIES: RankedContentOpportunity[] = [
+  {
+    id: "opp_1",
+    title: "Autonomous Coding Agent Framework Solves SWE-Bench Locally",
+    summary: "Open-source agent achieves 64.2% on SWE-bench using local weights without external cloud API fees.",
+    primary_source: "GitHub & arXiv",
+    scores: {
+      total_opportunity_score: 94.2,
+      freshness: 98.0,
+      momentum: 94.0,
+      relevance: 96.0,
+      audience_fit: 98.0,
+      competition: 35.0,
+      saturation: 25.0,
+      novelty: 92.0,
+      content_gap: 94.0,
+      creator_fit: 98.0,
+      historical_performance: 88.0,
+      production_difficulty: 35.0,
+      urgency: "POST_NOW",
+      urgency_reason: "High novelty local coding breakthrough with strong builder demand.",
+      recommended_pillar: "AI Tools",
+      recommended_series: "AI TOOL YOU NEED",
+      recommended_format: "Reel",
+      recommended_angle: "How developers can run autonomous coding agents locally on a single GPU"
+    },
+    entities: ["DeepSeek", "SWE-Bench", "Autonomous Agents", "Local AI"],
+    key_claims: [
+      "Achieves 64.2% on SWE-bench benchmark",
+      "Runs completely offline on single 24GB GPU",
+      "Zero per-token cloud API cost"
+    ],
+    alternative_angles: [
+      "Beginner: What local AI coding agents mean for non-programmers",
+      "Contrarian: Why cloud API pricing for agents will collapse in 2026",
+      "Future: The step toward autonomous software engineering teams"
+    ],
+    created_at: new Date().toISOString()
+  },
+  {
+    id: "opp_2",
+    title: "Anthropic Unveils Next-Gen Reasoning Architecture for Claude",
+    summary: "Test-time compute dynamically scales with query difficulty, slashing formal logic hallucinations by 84%.",
+    primary_source: "Anthropic Research",
+    scores: {
+      total_opportunity_score: 89.5,
+      freshness: 92.0,
+      momentum: 91.0,
+      relevance: 95.0,
+      audience_fit: 92.0,
+      competition: 55.0,
+      saturation: 40.0,
+      novelty: 88.0,
+      content_gap: 89.0,
+      creator_fit: 94.0,
+      historical_performance: 85.0,
+      production_difficulty: 30.0,
+      urgency: "POST_TODAY",
+      urgency_reason: "Major frontier model leap. High authority and explainer retention.",
+      recommended_pillar: "AI Explained",
+      recommended_series: "AI IN 15 SECONDS",
+      recommended_format: "Carousel",
+      recommended_angle: "How test-time compute allows Claude to think before answering"
+    },
+    entities: ["Claude", "Anthropic", "Reasoning", "Test-Time Compute"],
+    key_claims: [
+      "Test-time compute dynamically scales with task difficulty",
+      "84% hallucination drop on formal logic benchmarks"
+    ],
+    alternative_angles: [
+      "Technical: Transformer attention head scaling during inference",
+      "Future: Why reasoning models represent the true Road to AGI"
+    ],
+    created_at: new Date().toISOString()
+  }
+];
+
+export function createMockFutureAiiPackage(topic: string, pillar?: string): ContentAssetPackage {
+  const cleanTopic = topic.split(":")[0];
+  const p = pillar || "AI Tools";
+  return {
+    content_id: `pkg_${Math.abs(topic.length * 999)}`,
+    pillar: p,
+    series: p === "AI Tools" ? "AI TOOL YOU NEED" : "AI NEWS TODAY",
+    topic: cleanTopic,
+    brand_handle: "future.aii__",
+    status: "READY_TO_POST",
+    strategy: {
+      pillar: p,
+      series: "AI TOOL YOU NEED",
+      goal: "Reach & Follows",
+      angle: `What developers can build with ${cleanTopic} starting today`,
+      target_audience: "18-30 AI Builders, Students, and Engineers"
+    },
+    research: {
+      key_claims: [
+        `${cleanTopic} achieves 4.2x faster inference streaming`,
+        "Verified benchmark confirms zero latency buffer",
+        "Available for immediate local integration via open API"
+      ],
+      confidence_score: 98.0,
+      source_count: 8
+    },
+    fact_audit: {
+      total_claims_analyzed: 3,
+      confirmed_claims_count: 3,
+      unverified_claims_count: 0,
+      speculative_predictions_count: 0,
+      overall_confidence: 98.0,
+      is_fully_traceable: true,
+      sentence_traces: [
+        {
+          sentence_id: "s1",
+          script_text: `Yesterday, ${cleanTopic} released with open weights.`,
+          extracted_claim: `${cleanTopic} official release`,
+          source_name: "Official Technical Benchmark & Architecture Paper",
+          source_url: "https://arxiv.org/abs/2609.ai-breakthrough",
+          source_date: new Date().toISOString(),
+          evidence_snippet: "Primary release announcement on arXiv and official documentation.",
+          confidence_score: 99.0,
+          epistemic_category: "FACT",
+          verification_status: "CONFIRMED"
+        }
+      ]
+    },
+    hooks: {
+      best_hook: {
+        category: "Contrarian",
+        text: `Everyone is hyping up ${cleanTopic}, but here is the critical benchmark nobody is talking about.`,
+        composite_score: 92.4,
+        curiosity: 94.0, clarity: 91.0, novelty: 90.0, relevance: 95.0, retention_potential: 93.0, credibility: 92.0, clickbait_risk: 14.0, tag: "BEST"
+      },
+      safe_hook: {
+        category: "Authority",
+        text: `According to the official technical paper, ${cleanTopic} reduces inference latency by 60%.`,
+        composite_score: 88.1,
+        curiosity: 82.0, clarity: 98.0, novelty: 84.0, relevance: 93.0, retention_potential: 85.0, credibility: 99.0, clickbait_risk: 4.0, tag: "SAFE"
+      },
+      high_risk_hook: {
+        category: "Fear",
+        text: `If your current coding workflow still relies on manual debugging, ${cleanTopic} just made it obsolete.`,
+        composite_score: 87.5,
+        curiosity: 96.0, clarity: 86.0, novelty: 85.0, relevance: 94.0, retention_potential: 95.0, credibility: 82.0, clickbait_risk: 28.0, tag: "HIGH_RISK"
+      },
+      all_hooks: []
+    },
+    selected_hook: `Everyone is hyping up ${cleanTopic}, but here is the critical benchmark nobody is talking about.`,
+    script: {
+      duration_seconds: 30,
+      pillar: p,
+      series: "AI TOOL YOU NEED",
+      hook_text: `Everyone is hyping up ${cleanTopic}, but here is the critical benchmark nobody is talking about.`,
+      cta_text: "Comment 'TOOL' and I'll DM you the direct repository link and setup prompt.",
+      total_words: 78,
+      estimated_wpm: 156,
+      segments: [
+        {
+          sentence_id: "s1_hook",
+          time_start: 0.0,
+          time_end: 3.0,
+          phase: "HOOK",
+          voice: `Everyone is hyping up ${cleanTopic}, but here is the critical benchmark nobody is talking about.`,
+          visual: "Extreme close-up of dark metallic GPU processor with amber neon light pulses racing across circuits.",
+          on_screen_text: `🚨 ${cleanTopic.toUpperCase()}`,
+          sfx: "Sub-bass drop + metallic shimmer",
+          camera: "Snap zoom into glowing processor core",
+          underlying_claim: "Release confirmed"
+        },
+        {
+          sentence_id: "s2_context",
+          time_start: 3.0,
+          time_end: 9.0,
+          phase: "CONTEXT",
+          voice: `Instead of waiting on cloud APIs, this model runs entirely on local consumer hardware at 180 tokens per second.`,
+          visual: "Terminal screen recording streaming code without buffer delay; high-contrast split screen.",
+          on_screen_text: "180 TOKENS / SEC LOCAL",
+          sfx: "Keyboard typing rhythm",
+          camera: "Static crisp framing",
+          underlying_claim: "Local latency"
+        },
+        {
+          sentence_id: "s3_payoff",
+          time_start: 9.0,
+          time_end: 18.0,
+          phase: "PAYOFF",
+          voice: `Here is why that matters: it slashes development costs by 90% while keeping all proprietary codebase data completely offline.`,
+          visual: "Animated node graph connecting local IDE to offline model weights with green checkmarks.",
+          on_screen_text: "90% COST REDUCTION",
+          sfx: "High tech swoop",
+          camera: "Slow upward pan",
+          underlying_claim: "Cost tradeoff"
+        },
+        {
+          sentence_id: "s4_why_matters",
+          time_start: 18.0,
+          time_end: 24.0,
+          phase: "WHY_IT_MATTERS",
+          voice: `You can initialize this in your project today with three lines of code and run autonomous unit test sweeps.`,
+          visual: "Live IDE demo showing tests passing autonomously in green.",
+          on_screen_text: "AUTONOMOUS TEST SWEEPS",
+          sfx: "Terminal success chime",
+          camera: "Over-the-shoulder coding view",
+          underlying_claim: "Workflow test"
+        },
+        {
+          sentence_id: "s5_cta",
+          time_start: 24.0,
+          time_end: 30.0,
+          phase: "CTA",
+          voice: "Comment 'TOOL' and I'll DM you the direct repository link and setup prompt.",
+          visual: "Dark futuristic Instagram endcard featuring @future.aii__ and pulsating keyword trigger graphic.",
+          on_screen_text: "COMMENT 'TOOL' FOR SETUP ⬇️",
+          sfx: "Clean chimes tone",
+          camera: "Gentle pull-back",
+          underlying_claim: undefined
+        }
+      ],
+      formatted_director_notes: "Production cues verified. Ready for recording."
+    },
+    shot_list: [
+      { shot_number: 1, time_range: "0.0s–3.0s", phase: "HOOK", visual_description: "Dark metallic GPU with neon pulses", camera_motion: "Snap zoom", sfx_cue: "Sub-bass impact", on_screen_text: "STOP SCROLLING" },
+      { shot_number: 2, time_range: "3.0s–9.0s", phase: "CONTEXT", visual_description: "Terminal code streaming at 180 tokens/sec", camera_motion: "Split screen", sfx_cue: "Typing rhythm", on_screen_text: "180 TOKENS/SEC" },
+      { shot_number: 3, time_range: "9.0s–18.0s", phase: "PAYOFF", visual_description: "Node architecture diagram", camera_motion: "Slow upward pan", sfx_cue: "Tech swoosh", on_screen_text: "90% COST SAVED" },
+      { shot_number: 4, time_range: "18.0s–24.0s", phase: "WHY_IT_MATTERS", visual_description: "IDE autonomous test passing", camera_motion: "Over shoulder", sfx_cue: "Success chime", on_screen_text: "PASSING" },
+      { shot_number: 5, time_range: "24.0s–30.0s", phase: "CTA", visual_description: "Branded outro card", camera_motion: "Pull back", sfx_cue: "Chimes", on_screen_text: "COMMENT 'TOOL'" }
+    ],
+    visual_plan: {
+      aesthetic: "Dark cinematic terminal, high-contrast amber neon glyphs, 1080x1920 9:16 vertical",
+      safe_zones_respected: true,
+      primary_metaphor: "Direct-to-weights neural pipeline"
+    },
+    remotion_spec: {
+      composition_name: "Reel_Comp_101",
+      duration_in_frames: 900,
+      fps: 30,
+      width: 1080,
+      height: 1920,
+      safe_zones: { top: 180, bottom: 320, left: 60, right: 120 },
+      copyable_react_code: "// Remotion React composition code generated. Copy and render with npx remotion render Root out.mp4",
+      implementation_guide: "Paste into src/Root.tsx and run npm start."
+    },
+    ai_video_prompts: {
+      veo_prompt: `Cinematic macro shot of glowing dark GPU processor with neon amber circuitry in dark studio. Topic: ${cleanTopic}.`,
+      gemini_omni_prompt: `Ultra-crisp dark coding environment with green terminal benchmarks and floating futuristic holographic nodes. Topic: ${cleanTopic}.`
+    },
+    thumbnail_spec: {
+      headline_overlay: cleanTopic.slice(0, 18).toUpperCase(),
+      visual_element: "Surprised dev face + glowing amber code diff",
+      contrast_ratio: "High (9:1)"
+    },
+    caption: `Everyone is hyping up ${cleanTopic}, but here is the critical benchmark nobody is talking about.\n\nHere is what actually changed:\n• Verified 4.2x faster inference\n• Local GPU execution with zero cloud latency\n• Full setup ready in 3 lines of code\n\nComment 'TOOL' and I'll DM you the direct repository link and setup prompt! ⬇️\n\n—\nFollow @future.aii__ — Your window into the AI future.\n\n#AI #Coding #DeepSeek #TechNews #MachineLearning`,
+    hashtags: ["#AI", "#TechNews", "#FutureOfAI", "#MachineLearning", "#Coding"],
+    cta_spec: {
+      cta_type: "DM_Resource",
+      public_cta_text: "Comment 'TOOL' and I'll DM you the direct repository link and setup prompt.",
+      rationale: "High comment velocity triggering algorithmic boost while delivering legitimate software utility.",
+      has_deliverable_resource: true,
+      resource_keyword: "TOOL"
+    },
+    automation_spec: {
+      id: "auto_sample",
+      content_id: "pkg_sample",
+      trigger_source: "COMMENT",
+      keywords: ["TOOL", "#TOOL", "tool"],
+      match_type: "WORD",
+      public_reply_options: ["Just sent the setup docs to your DMs! Check message requests 👀"],
+      initial_dm: `Hey! Here is the setup repository and starter prompt for ${cleanTopic} 👇\n\nhttps://github.com/future-aii/starter-kit`,
+      resource_type: "LINK",
+      resource_content: "https://github.com/future-aii/starter-kit",
+      follow_up_nudge: "If you found this useful, follow @future.aii__ for daily AI breakdowns! 🧠",
+      status: "ACTIVE",
+      analytics: { trigger_count: 412, dm_sent_count: 398, reply_count: 88, conversion_count: 74 }
+    },
+    story_sequence: {
+      topic: cleanTopic,
+      total_stories: 3,
+      stories: [
+        {
+          story_number: 1,
+          story_type: "POLL",
+          headline: `Quick question about ${cleanTopic}...`,
+          subtext: "Would you trust an AI agent running this model to manage your computer files autonomously?",
+          interactive_sticker: { type: "poll", question: "Trust autonomous AI?", options: ["Yes, 100%", "No way 🙅‍♂️"] },
+          background_visual: "Dark moody terminal aesthetic"
+        },
+        {
+          story_number: 2,
+          story_type: "TEASER",
+          headline: "Here is what happened when we tested it:",
+          subtext: "We ran 50 real developer tests. The latency results were surprising.",
+          interactive_sticker: { type: "slider", emoji: "🔥", question: "Excitement level" },
+          background_visual: "Sneak peek benchmark graph"
+        },
+        {
+          story_number: 3,
+          story_type: "RESULT",
+          headline: "The Full Teardown Is Live 🚨",
+          subtext: "Watch tonight's Reel to see the full code teardown.",
+          interactive_sticker: { type: "link", text: "Watch Breakdown 🎥" },
+          background_visual: "Crisp dark Reel cover visual",
+          cta_link_or_sticker: "instagram.com/future.aii__"
+        }
+      ]
+    },
+    carousel_spec: {
+      title: `Teardown: ${cleanTopic}`,
+      pillar: p,
+      total_slides: 8,
+      target_aspect_ratio: "4:5",
+      slides: [
+        { slide_number: 1, slide_role: "HOOK", headline: `Everything You Need To Know About ${cleanTopic}`, body_points: ["The architectural breakthrough that matters", "Swipe for the full teardown →"], visual_layout: "hero_text_center", typography_hierarchy: "H1 52pt Bold / Amber 400", cta_badge: "SWIPE ➡️" },
+        { slide_number: 2, slide_role: "WHAT_HAPPENED", headline: "1. What Just Happened", body_points: ["Official announcement released", "Trained on clean verified weights"], visual_layout: "stat_callout_huge", typography_hierarchy: "Headline 32pt Bold" },
+        { slide_number: 8, slide_role: "CTA", headline: "Save This For Your Next Build", body_points: ["Comment 'TOOL' for the full cheat sheet", "Follow @future.aii__"], visual_layout: "hero_text_center", typography_hierarchy: "Headline 40pt Gradient", cta_badge: "COMMENT 'TOOL' ⬇️" }
+      ],
+      caption: `Swipe through for the complete ${cleanTopic} teardown!`,
+      hashtags: ["#AI", "#TechNews"]
+    },
+    x_post: `Everyone is hyping up ${cleanTopic}, but here is what actually changed under the hood 🧵👇`,
+    youtube_short: `Title: ${cleanTopic} Changed Everything in 30 Seconds\nDescription: Watch the full teardown.`,
+    quality_scores: {
+      content_quality: 94.0,
+      hook_strength: 92.4,
+      story_pacing: 92.0,
+      value_density: 95.0,
+      originality: 91.0,
+      visual_direction: 96.0,
+      platform_fit: 98.0,
+      cta_alignment: 94.0,
+      source_confidence: 98.0,
+      brand_fit: 97.0
+    },
+    is_ready_to_post: true,
+    publishing_window: "Today 19:30 - 21:00 UTC"
+  };
+}
+
+export const MOCK_TODAY_WORKSPACE: TodayWorkspacePayload = {
+  greeting: "GOOD MORNING 👋",
+  north_star_headline: "Today's #1 Publishable Story: Autonomous Coding Agent Framework Solves SWE-Bench Locally",
+  active_events_count: 3,
+  top_opportunities: MOCK_FUTURE_AII_OPPORTUNITIES,
+  star_opportunity: MOCK_FUTURE_AII_OPPORTUNITIES[0],
+  ready_content_packages: [createMockFutureAiiPackage(MOCK_FUTURE_AII_OPPORTUNITIES[0].title, "AI Tools")],
+  today_schedule_slots: [
+    { date_str: "Today", day_of_week: "Monday", time_slot: "19:30", pillar: "AI Tools", series: "AI TOOL YOU NEED", format: "Reel", title: "Local Autonomous Coding Agents", status: "READY_TO_POST" },
+    { date_str: "Today", day_of_week: "Monday", time_slot: "21:00", pillar: "AI News", series: "AI NEWS TODAY", format: "Story", title: "SWE-Bench Poll & Community Debate", status: "SCHEDULED" }
+  ],
+  engagement_tasks: [
+    { task: "Review 38 pending DMs from yesterday's 'TOOL' automation", status: "Ready", estimated_time: "5m" },
+    { task: "Reply to top 3 developer debates in comments", status: "Pending", estimated_time: "10m" }
+  ],
+  yesterday_learnings: [
+    "Educational 30s Reels generated 2.4x more saves than broad news recaps.",
+    "The 'Contrarian + Benchmark' hook reached 184k views with 74% 2-second retention.",
+    "Comment-to-DM keyword 'AGENT' converted at 18.4% without any spam flags."
+  ],
+  pillar_balance: {
+    "AI News": 25.0,
+    "AI Explained": 20.0,
+    "AI Tools": 15.0,
+    "AI For Normal People": 10.0,
+    "AGI / ASI / Future": 10.0,
+    "AI Memes / Relatable": 10.0,
+    "AI Experiments": 10.0
+  }
+};
+
+export const MOCK_FUTURE_AII_CLUSTER: ContentClusterPackage = {
+  cluster_id: "cluster_swe_bench_local",
+  event_id: "opp_1",
+  event_title: "Autonomous Coding Agent Framework Solves SWE-Bench Locally",
+  cluster_theme: "Complete 10-piece multi-format coverage ecosystem",
+  created_at: new Date().toISOString(),
+  pieces: [
+    { piece_id: "p1", role: "Breaking News Reel", format: "Reel", pillar: "AI News", series: "BREAKING AI", target_audience: "General AI Builders", angle: "Urgent breaking alert: SWE-bench solved locally", hook: "This open source AI agent just solved SWE-bench without cloud APIs.", synopsis: "15s rapid response alert.", recommended_duration: 15, cta: "Follow @future.aii__", is_approved: true },
+    { piece_id: "p2", role: "What Changed? Reel", format: "Reel", pillar: "AI News", series: "AI NEWS TODAY", target_audience: "Engineers & Founders", angle: "What actually changed under the hood", hook: "Everyone is hyping this agent, but here is what actually changed.", synopsis: "30s analytical breakdown of the architecture.", recommended_duration: 30, cta: "Save this breakdown", is_approved: true },
+    { piece_id: "p3", role: "Explainer Reel", format: "Reel", pillar: "AI Explained", series: "AI IN 15 SECONDS", target_audience: "Students & Builders", angle: "Visual mental model of local agent memory", hook: "If you don't understand how coding agents think, watch this in 15 seconds.", synopsis: "Visual analogy comparing local VRAM to desk space.", recommended_duration: 20, cta: "Comment 'EXPLAIN'", comment_keyword: "EXPLAIN", is_approved: true },
+    { piece_id: "p4", role: "Tool Demo Reel", format: "Reel", pillar: "AI Tools", series: "AI TOOL YOU NEED", target_audience: "Productivity Seekers", angle: "One real copy-paste workflow", hook: "Stop debugging manually — this local agent does it in 60s.", synopsis: "Live screen recording of automated unit test refactor.", recommended_duration: 30, cta: "Comment 'TOOL'", comment_keyword: "TOOL", is_approved: true },
+    { piece_id: "p5", role: "Comparison Reel", format: "Reel", pillar: "AI Experiments", series: "AI VS AI", target_audience: "Developers Choosing Stacks", angle: "Local agent vs Cloud Claude Code", hook: "We tested the local agent against Claude Code on the exact same bug.", synopsis: "Head to head speed and error analysis.", recommended_duration: 45, cta: "Comment 'BENCHMARK'", comment_keyword: "BENCHMARK", is_approved: true },
+    { piece_id: "p6", role: "Future / AGI Reel", format: "Reel", pillar: "AGI / ASI / Future", series: "ROAD TO AGI", target_audience: "Futurists", angle: "Why local autonomy shifts the timeline", hook: "Researchers aren't saying this publicly, but local agents just unlocked AGI milestone 3.", synopsis: "Epistemic separation of fact vs prediction.", recommended_duration: 60, cta: "Follow Road to AGI", is_approved: true },
+    { piece_id: "p7", role: "Relatable AI Meme", format: "Reel", pillar: "AI Memes / Relatable", series: "AI POV", target_audience: "Internet-Native Culture", angle: "Deploying the agent at 3 AM", hook: "POV: You gave the AI agent full terminal access and went to sleep.", synopsis: "Humorous 10s clip of agent committing 14,000 files.", recommended_duration: 10, cta: "Tag a developer", is_approved: true },
+    { piece_id: "p8", role: "Educational Carousel", format: "Carousel", pillar: "AI Explained", series: "AI EXPLAINED", target_audience: "Instagram Learners", angle: "7 things you need to know", hook: "Swipe through: The 7 architectural shifts in local agents.", synopsis: "8 high-contrast dark slides.", cta: "Save post", comment_keyword: "SLIDES", is_approved: true },
+    { piece_id: "p9", role: "Interactive Story Sequence", format: "Story", pillar: "AI News", series: "TOOL OF THE DAY", target_audience: "Daily Followers", angle: "Poll + teaser", hook: "Would you trust an offline AI agent with your codebase?", synopsis: "3-part interactive story poll.", cta: "Watch Reel", is_approved: true },
+    { piece_id: "p10", role: "X Post / Short Form Thread", format: "Post", pillar: "AI News", series: "AI NEWS TODAY", target_audience: "X Tech Community", angle: "High signal technical teardown", hook: "Local coding agents just hit 64.2% on SWE-bench. 5 shifts that matter: 🧵👇", synopsis: "Bullet point thread with GitHub repo link.", cta: "Retweet", is_approved: true }
+  ]
+};
+
+export const MOCK_FUTURE_AII_DIAGNOSTICS: ComparativeDiagnosticResult = {
+  post_a: {
+    id: "post_a_winner",
+    title: "Why Developers Are Ditching Cloud LLMs for Local DeepSeek",
+    views: 482000,
+    retention_rate: 78.4,
+    share_rate: 4.2,
+    save_rate: 6.8,
+    hook_type: "Contrarian + Benchmark",
+    duration_seconds: 28,
+    cta_type: "DM_Resource"
+  },
+  post_b: {
+    id: "post_b_underperformer",
+    title: "New Open-Source Models Released This Week",
+    views: 36000,
+    retention_rate: 42.1,
+    share_rate: 0.8,
+    save_rate: 1.2,
+    hook_type: "Generic Announcement",
+    duration_seconds: 54,
+    cta_type: "Follow"
+  },
+  winner_id: "post_a_winner",
+  performance_multiple: 13.4,
+  differential_analysis: [
+    "Hook Architecture: Winner used a 'Contrarian + Benchmark' hook establishing high stakes within 2.0s, while loser used a delayed announcement.",
+    "Information Utility: Winner generated +5.6% higher save rate by delivering a concrete copy-paste terminal workflow.",
+    "Pacing: Winner was 26s shorter (28s vs 54s), maintaining relentless information density.",
+    "Conversion Mechanic: Winner leveraged a 'Comment TOOL' CTA with immediate automated resource delivery."
+  ],
+  key_takeaway: "Post A outperformed Post B by 13.4x primarily due to first-2-second visual contrast, verifiable benchmark specificity, and a resource-backed comment CTA.",
+  prescriptive_action: "Standardize the 28s duration and Contrarian + Benchmark hook formula for all upcoming AI Tools content."
+};
+
+export const MOCK_FUTURE_AII_WINNERS: WinnerDetectionReport = {
+  winning_hooks: [
+    { type: "Contrarian + Benchmark", avg_views: 184000, win_rate: "86%", insight: "Lead with the surprising metric everyone missed" },
+    { type: "Problem / Urgent Pain", avg_views: 142000, win_rate: "78%", insight: "Frame manual workflow as immediate wasted time" },
+    { type: "Visual Paradox", avg_views: 118000, win_rate: "72%", insight: "Show unexpected screen recording in frame 0" }
+  ],
+  winning_topics: [
+    { topic: "Autonomous Coding Agents", engagement_index: 96.4, saves_multiple: 2.8 },
+    { topic: "Local Inference & Ollama / DeepSeek", engagement_index: 92.1, saves_multiple: 3.1 },
+    { topic: "Frontier Model Benchmarks (Claude vs GPT vs Gemini)", engagement_index: 89.8, shares_multiple: 2.4 },
+    { topic: "Road to AGI & Test-Time Compute", engagement_index: 85.0, reach_multiple: 2.1 }
+  ],
+  winning_formats: [
+    { format: "30-Sec Reel (Voice + Screen Diff)", avg_completion: "64.2%", score: 94 },
+    { format: "8-Slide Architecture Carousel", avg_saves: "1,840", score: 91 },
+    { format: "15-Sec Breaking News Reel", avg_shares: "920", score: 87 }
+  ],
+  winning_pillars: [
+    { pillar: "AI Explained", share_of_top_posts: "34%", strength: "Highest saves & profile visits" },
+    { pillar: "AI News", share_of_top_posts: "28%", strength: "Highest reach & velocity" },
+    { pillar: "AI Tools", share_of_top_posts: "22%", strength: "Highest comment-to-DM conversions" }
+  ],
+  winning_series: [
+    { series: "AI IN 15 SECONDS", avg_retention: "82.4%", cadence: "3x weekly" },
+    { series: "AI TOOL YOU NEED", avg_dm_triggers: "412", cadence: "3x weekly" },
+    { series: "ROAD TO AGI", avg_shares: "1,450", cadence: "2x weekly" }
+  ],
+  winning_ctas: [
+    { cta: "Comment 'TOOL' for link & prompt", conversion_rate: "18.4%", efficiency: "Exceptional" },
+    { cta: "Comment 'CHEAT' for visual diagram", conversion_rate: "16.1%", efficiency: "High" },
+    { cta: "Save this for your next project", save_lift: "+140%", efficiency: "High" }
+  ],
+  winning_visual_styles: [
+    { style: "Dark Metallic IDE Terminal + Amber Neon Highlights", retention_lift: "+24%" },
+    { style: "Split-Screen Head-to-Head Benchmark Ticker", retention_lift: "+31%" },
+    { style: "Animated Node Graph Vector Overlay", retention_lift: "+18%" }
+  ],
+  winning_durations: [
+    { duration_bucket: "25–35 seconds", avg_retention: "76.8%", verdict: "OPTIMAL SWEET SPOT" },
+    { duration_bucket: "12–18 seconds", avg_retention: "84.2%", verdict: "HIGH COMPLETION (Breaking)" },
+    { duration_bucket: "50–70 seconds", avg_retention: "52.1%", verdict: "RESERVE FOR DEEP EXPERIMENTS" }
+  ],
+  generated_at: new Date().toISOString()
+};
+
+export const MOCK_FUTURE_AII_CALENDAR: Calendar30DayView = {
+  start_date: new Date().toISOString().slice(0, 10),
+  end_date: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
+  total_slots: 30,
+  pillar_distribution: {
+    "AI News": 25.0,
+    "AI Explained": 20.0,
+    "AI Tools": 15.0,
+    "AI For Normal People": 10.0,
+    "AGI / ASI / Future": 10.0,
+    "AI Memes / Relatable": 10.0,
+    "AI Experiments": 10.0
+  },
+  target_distribution: {
+    "AI News": 25.0,
+    "AI Explained": 20.0,
+    "AI Tools": 15.0,
+    "AI For Normal People": 10.0,
+    "AGI / ASI / Future": 10.0,
+    "AI Memes / Relatable": 10.0,
+    "AI Experiments": 10.0
+  },
+  slots: Array.from({ length: 30 }, (_, i) => {
+    const d = new Date(Date.now() + i * 86400000);
+    const dayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][d.getDay()];
+    const pillars = ["AI News", "AI Explained", "AI Tools", "AI Experiments", "AGI / ASI / Future", "AI Memes / Relatable", "AI Explained"];
+    const p = pillars[i % 7];
+    return {
+      date_str: d.toISOString().slice(0, 10),
+      day_of_week: dayName,
+      time_slot: "19:30",
+      pillar: p,
+      series: p === "AI News" ? "AI NEWS TODAY" : p === "AI Tools" ? "AI TOOL YOU NEED" : "AI IN 15 SECONDS",
+      format: p === "AI Explained" ? "Carousel" : "Reel",
+      content_id: `slot_${i}`,
+      title: `${p} Broadcast #${i + 1}`,
+      status: i === 0 ? "READY_TO_POST" : "SCHEDULED"
+    };
+  })
+};
+
+export const MOCK_FUTURE_AII_PIPELINE: PipelineStageSummary[] = [
+  { stage: "IDEA", count: 8, items: [{ id: "i1", title: "Open-source WebGPU reasoning", pillar: "AI Explained" }] },
+  { stage: "RESEARCHING", count: 4, items: [{ id: "i2", title: "DeepSeek v3 benchmarks", pillar: "AI News" }] },
+  { stage: "BRIEF_READY", count: 3, items: [{ id: "i3", title: "Local agent setup on M3 Max", pillar: "AI Tools" }] },
+  { stage: "SCRIPT_READY", count: 3, items: [{ id: "i4", title: "Why test-time compute matters", pillar: "AI Explained" }] },
+  { stage: "CREATIVE_READY", count: 2, items: [{ id: "i5", title: "Claude vs GPT full app test", pillar: "AI Experiments" }] },
+  { stage: "PRODUCTION", count: 2, items: [{ id: "i6", title: "SWE-bench local run demo", pillar: "AI Tools" }] },
+  { stage: "EDITING", count: 1, items: [{ id: "i7", title: "Agent POV 3 AM", pillar: "AI Memes / Relatable" }] },
+  { stage: "REVIEW", count: 2, items: [{ id: "i8", title: "Road to AGI Milestone 3", pillar: "AGI / ASI / Future" }] },
+  { stage: "READY_TO_POST", count: 3, items: [{ id: "i9", title: "Autonomous Coding Agent Framework", pillar: "AI Tools" }] },
+  { stage: "SCHEDULED", count: 5, items: [{ id: "i10", title: "Tonight's Reel 19:30", pillar: "AI News" }] },
+  { stage: "PUBLISHED", count: 24, items: [{ id: "i11", title: "Yesterday's Breakdown", pillar: "AI News" }] },
+  { stage: "ANALYZING", count: 4, items: [{ id: "i12", title: "Post A telemetry stream", pillar: "AI Tools" }] },
+  { stage: "LEARNED", count: 18, items: [{ id: "i13", title: "Contrarian hook formula win", pillar: "AI News" }] }
+];
+
