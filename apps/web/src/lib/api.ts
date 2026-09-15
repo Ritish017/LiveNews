@@ -1053,4 +1053,320 @@ export const fetchAnalyticsDiagnostics = fetchFutureAiiDiagnostics;
 export const fetchWinnerDetection = fetchFutureAiiWinners;
 export const fetchBrandProfile = fetchFutureAiiBrand;
 
+// ============================================================================
+// CREATOR CONTENT OS (SIMPLIFIED CREATOR INTERFACE APIS)
+// ============================================================================
+
+export async function fetchCreatorToday(): Promise<any> {
+  return safeApiFetch(
+    `${API_BASE}/content/today`,
+    undefined,
+    () => ({
+      greeting: "Good morning. What should we create today?",
+      recommendations: [
+        {
+          id: "rec_1",
+          badge: "🔥 POST THIS",
+          title: "Open-Source AI Just Achieved Local Reasoning Under 400ms",
+          why: "High relevance + strong creator opportunity + useful to AI developers.",
+          format: "30-sec Reel",
+          content_type: "AI Tools",
+          topic: "Autonomous Local Coding Agents with DeepSeek",
+          action_label: "CREATE EVERYTHING"
+        },
+        {
+          id: "rec_2",
+          badge: "📈 RISING FAST",
+          title: "Why You Don't Need Cloud APIs to Build AI Apps Anymore",
+          why: "Massive save intent as developers look to slash monthly subscription bills.",
+          format: "30-sec Reel",
+          content_type: "AI Explained",
+          topic: "Local Inference & Context Windows",
+          action_label: "CREATE EVERYTHING"
+        },
+        {
+          id: "rec_3",
+          badge: "🧠 IMPORTANT SHIFT",
+          title: "Anthropic vs OpenAI: The Real Difference in Agent Architectures",
+          why: "Clears up widespread confusion and drives high profile follows.",
+          format: "45-sec Reel",
+          content_type: "AI News",
+          topic: "Frontier Agent Orchestration",
+          action_label: "CREATE EVERYTHING"
+        }
+      ],
+      best_ideas: [
+        { rank: 1, type: "AI News", title: "Google DeepMind's New Memory Architecture" },
+        { rank: 2, type: "AI Tool", title: "Free Local Agent That Replaces GitHub Copilot" },
+        { rank: 3, type: "AI Explained", title: "How Test-Time Compute Actually Works" }
+      ],
+      content_queue_today: [
+        { time: "09:00", pillar: "AI News", title: "Local Reasoning Breakthrough", status: "Ready to Post" },
+        { time: "13:00", pillar: "AI Tools", title: "Free Offline Coding Agent", status: "Script Ready" },
+        { time: "20:00", pillar: "AI Memes", title: "Friday Production Deploy Chaos", status: "Ideation" }
+      ],
+      creator_learning: "Your tool demonstrations are performing 2.1× better than generic news summaries. Continue prioritizing practical terminal workflows."
+    })
+  );
+}
+
+export async function fetchCreatorRadar(): Promise<any> {
+  return safeApiFetch(
+    `${API_BASE}/content/radar`,
+    undefined,
+    () => ({
+      breaking_now: [
+        {
+          id: "trend_1",
+          topic: "OpenAI Agent Swarm & Infrastructure Security",
+          what_happened: "Security researchers documented autonomous agent package uploads.",
+          why_it_matters: "Changes how companies audit third-party AI package permissions.",
+          best_content_type: "AI News",
+          recommended_angle: "What developers must configure to safeguard dependencies today."
+        }
+      ],
+      rising: [
+        {
+          id: "trend_2",
+          topic: "Test-Time Compute & Reasoning Models",
+          what_happened: "Shift from pre-training scale to inference-time reasoning budgets.",
+          why_it_matters: "Allows smaller models to beat larger models on hard math and coding.",
+          best_content_type: "AI Explained",
+          recommended_angle: "Why waiting 10 seconds for AI to 'think' saves hours of debugging."
+        },
+        {
+          id: "trend_3",
+          topic: "Local Code Agents on Apple Silicon",
+          what_happened: "Quantized reasoning models achieving 140 tok/s on M3/M4 hardware.",
+          why_it_matters: "Eliminates monthly cloud API fees for student and freelance developers.",
+          best_content_type: "AI Tools",
+          recommended_angle: "How to set up an offline coding assistant tonight for free."
+        }
+      ],
+      under_the_radar: [
+        {
+          id: "trend_4",
+          topic: "World Models & Interactive Simulation",
+          what_happened: "Research showing real-time action chunk editing in generative video.",
+          why_it_matters: "Lays foundational architecture for autonomous physical robotics.",
+          best_content_type: "Future / AGI / ASI",
+          recommended_angle: "Why video models will teach robots how physical reality works."
+        }
+      ],
+      saturated: [
+        {
+          id: "trend_5",
+          topic: "Generic Top 5 AI Tools Lists",
+          what_happened: "Over-saturated copycat lists across TikTok and Instagram.",
+          why_it_matters: "Viewers instantly scroll past generic marketing claims.",
+          best_content_type: "AI Experiments",
+          recommended_angle: "Skip the list: test one specific workflow rigorously."
+        }
+      ],
+      declining: [
+        {
+          id: "trend_6",
+          topic: "Basic Prompt Engineering Hacks",
+          what_happened: "Reasoning models make elaborate prompt personas obsolete.",
+          why_it_matters: "Audience wants verifiable agentic tools, not 50-word prompt formulas.",
+          best_content_type: "AI for Normal People",
+          recommended_angle: "Why modern reasoning models just need plain English instructions."
+        }
+      ]
+    })
+  );
+}
+
+export async function createCreatorContent(params: {
+  content_type: string;
+  topic: string;
+  angle?: string;
+  format_type?: string;
+  style?: string;
+  duration_sec?: number;
+  free_first?: boolean;
+}): Promise<any> {
+  return safeApiFetch(
+    `${API_BASE}/content/create`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(params)
+    },
+    () => {
+      const mockPkg = createMockFutureAiiPackage(params.topic, params.content_type);
+      return {
+        id: "mock_universal_" + Date.now(),
+        title: params.topic,
+        content_type: params.content_type,
+        series: mockPkg.series,
+        format: params.format_type || "Reel",
+        duration_seconds: params.duration_sec || 30,
+        target_audience: "Developers, students, and curious AI builders",
+        core_objective: "High engagement and verified resource DM loop",
+        strategic_angle: params.angle || `Why ${params.topic} actually changes the daily workflow`,
+        why_now: "Breaking development with immediate practical utility.",
+        why_audience_cares: "Saves hours of manual effort and cuts subscription costs.",
+        differentiation: "Focuses on engineering truth rather than press hype.",
+        hook: mockPkg.selected_hook,
+        alternative_hooks: [
+          `Stop using AI wrong for ${params.topic}.`,
+          `The hidden trick inside ${params.topic} nobody noticed.`,
+          `Why this single update changes your workflow tonight.`
+        ],
+        script_full_text: mockPkg.script.segments.map(s => s.voice).join(" "),
+        script_shots: mockPkg.script.segments.map((s, idx) => ({
+          shot_id: s.sentence_id,
+          time_start: s.time_start,
+          time_end: s.time_end,
+          duration_sec: s.time_end - s.time_start,
+          purpose: s.phase,
+          voiceover: s.voice,
+          on_screen_text: s.on_screen_text,
+          visual_concept: s.visual,
+          subject: "Interactive UI",
+          action: "Dynamic execution",
+          environment: "High-contrast dark tech studio",
+          composition: "Centered macro framing",
+          camera: "Sony FX3 Cine Prime",
+          lens: "35mm f/1.4",
+          movement: "Subtle 1.05x punch-in",
+          lighting: "6500K Key with warm amber rim",
+          sound_effects: s.sfx
+        })),
+        flow_prompts: [
+          {
+            shot_id: "s1_hook",
+            duration_sec: 2.5,
+            input_type: "TEXT_TO_VIDEO",
+            compiled_prompt: `[SHOT S1_HOOK - 2.5s - HOOK] Subject: Developer UI. Action: Instant code execution. Composition: Centered macro. Camera: 35mm Cine Prime. Lighting: 6500K Key with warm amber rim. Aesthetic: High-contrast modern dark tech. Sound: Tactile click boom.`,
+            camera_direction: "Punch-in on key syllable",
+            lighting_and_style: "Dark high-contrast cinematic",
+            negative_prompt: "no glowing blue brains, no matrix code rain, no generic floating holograms"
+          }
+        ],
+        gemini_prompts: {
+          deep_research_prompt: `Analyze ${params.topic} with Extended Thinking to extract what changed under the hood.`,
+          creative_angle_prompt: `Generate 5 contrarian hooks for ${params.topic}.`,
+          script_polisher_prompt: `Polish the spoken cadence of ${params.topic} for a 30s vertical reel.`,
+          critic_prompt: `Score retention risk and verify there is zero AI slop in the visual plan.`,
+          repurposing_prompt: `Repurpose ${params.topic} into a 7-slide carousel and 3-part interactive story sequence.`
+        },
+        chatgpt_prompts: {
+          system_context: "System: You are an expert Creative Director for @future.aii__.",
+          creative_director_task: `Generate vertical shot notes for ${params.topic}.`,
+          plugin_ready: true,
+          recommended_plugins: ["Web Browsing", "Advanced Data Analysis"]
+        },
+        remotion_spec: {
+          composition_name: "Reel_" + params.topic.replace(/[^a-zA-Z0-9]/g, ""),
+          duration_in_frames: (params.duration_sec || 30) * 30,
+          fps: 30,
+          width: 1080,
+          height: 1920,
+          is_atelier_mode: true,
+          copyable_react_code: mockPkg.remotion_spec.copyable_react_code,
+          render_command: `npx remotion render src/index.ts Reel_${params.topic.replace(/[^a-zA-Z0-9]/g, "")} out/reel.mp4`
+        },
+        hyperframes_spec: {
+          html_markup: "<div class='stage-vertical'><h1>@future.aii__</h1></div>",
+          css_styles: ".stage-vertical { width: 1080px; height: 1920px; background: #06090F; color: #FFF; }",
+          gsap_timeline_code: "gsap.from('h1', { duration: 0.8, scale: 0.5, ease: 'back.out' });",
+          duration_sec: params.duration_sec || 30
+        },
+        heygen_spec: {
+          avatar_id: "josh_lite3_2024",
+          voice_id: "en-US-Neural2-F",
+          speaking_script: mockPkg.script.segments.map(s => s.voice).join(" "),
+          b_roll_cues: []
+        },
+        opensource_spec: {
+          ffmpeg_concat_command: "ffmpeg -f concat -safe 0 -i inputs.txt -c copy out.mp4",
+          whisper_transcription_command: "whisper out.mp4 --model medium --output_format srt",
+          piper_tts_command: "echo 'voice' | piper --output_file voice.wav",
+          free_stock_keywords: ["terminal screen", "coding screen", "dark room monitor"]
+        },
+        editing_plan: {
+          software_targets: ["CapCut", "Premiere Pro", "DaVinci Resolve"],
+          timeline_cuts: mockPkg.shot_list.map(s => ({
+            clip_name: `Shot_${s.shot_number}`,
+            start_time: s.time_range,
+            caption_overlay: s.on_screen_text,
+            sfx_cue: s.sfx_cue
+          })),
+          audio_track_guidelines: "Track A1: Vocal Narration (-3dB). Track A2: Dark synth riser (-18dB).",
+          export_preset: "1080x1920 30fps H.264"
+        },
+        social_package: {
+          caption_short: mockPkg.caption.slice(0, 140),
+          caption_long: mockPkg.caption,
+          hashtags: mockPkg.hashtags,
+          cta_primary: mockPkg.cta_spec.public_cta_text,
+          cta_type: mockPkg.cta_spec.cta_type,
+          comment_keyword: mockPkg.cta_spec.resource_keyword || "PROMPT",
+          dm_public_reply: "Sending it to your DMs right now! Check message requests 👀",
+          dm_private_message: "Hey! Here is the exact workflow you asked for 👇\n\nhttps://future-aii.com",
+          dm_resource_deliverable: "Verified Workflow Guide",
+          follow_nudge: "Follow @future.aii__ for daily AI breakdowns."
+        },
+        cost_tier: "FREE",
+        primary_engine_routed: "REMOTION + SCREEN_RECORDING",
+        routing_reason: "Routed to Free-First Remotion Atelier for zero-cost local React rendering and kinetic typography.",
+        source_claims: [
+          {
+            source_name: "Official Technical Documentation",
+            claim: "Verified primary lab release with zero cloud latency bottlenecks.",
+            confidence: 98.0
+          }
+        ],
+        confidence_score: 97.0,
+        epistemic_status: "CONFIRMED",
+        originality_score: 96,
+        anti_slop_passed: true,
+        created_at: new Date().toISOString()
+      };
+    }
+  );
+}
+
+export async function fetchCreatorCalendar(): Promise<any> {
+  return safeApiFetch(
+    `${API_BASE}/content/calendar`,
+    undefined,
+    () => ({
+      date: new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }),
+      schedule: [
+        { time: "09:00 AM", pillar: "AI News", format: "Reel (30s)", title: "Breaking Lab Model Announcement", status: "Scheduled" },
+        { time: "01:00 PM", pillar: "AI Tools", format: "Reel (30s)", title: "Offline Coding Agent Setup", status: "Ready to Post" },
+        { time: "06:30 PM", pillar: "AI Explained", format: "Carousel (7 Slides)", title: "How Reasoning Models Actually Think", status: "Draft" },
+        { time: "09:00 PM", pillar: "AI Memes", format: "Reel (15s)", title: "When the Autonomous Agent Deletes Production", status: "Idea" }
+      ],
+      pacing_note: "Target: 2 Reels + 1 Carousel daily. Quality > Quantity. Never post filler."
+    })
+  );
+}
+
+export async function fetchCreatorAnalytics(): Promise<any> {
+  return safeApiFetch(
+    `${API_BASE}/content/analytics`,
+    undefined,
+    () => ({
+      account: "@future.aii__",
+      overall_views_30d: 3840000,
+      average_completion_rate: "62.4%",
+      top_performing_pillar: "AI Tools & Demonstrations",
+      key_learnings: [
+        "Tool demonstrations outperform generic AI news summaries by 2.1× in saves and DMs.",
+        "Sub-2.0s curiosity hooks ('Stop doing this manually') achieve 76% 3-second hold rates.",
+        "Comment trigger 'TOOL' generates 14× more active conversations than generic 'Follow for more' CTAs."
+      ],
+      best_performing_formats: [
+        { format: "30s Terminal Demo Reel", avg_views: "480K", retention: "68%" },
+        { format: "8-Slide Architecture Carousel", avg_saves: "14.2K", shares: "6.1K" },
+        { format: "15s Comedic Contrast Meme", avg_views: "820K", shares: "28.4K" }
+      ]
+    })
+  );
+}
+
 

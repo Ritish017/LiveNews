@@ -9,6 +9,7 @@ from backend.config import settings
 from backend.db.session import init_db, AsyncSessionLocal
 from backend.api.v1 import router as api_router
 from backend.api.future_aii import router as future_aii_router
+from backend.api.content_os import router as content_os_router
 from backend.providers.manager import provider_manager
 from backend.workers.scheduler import run_periodic_ingestion
 
@@ -56,8 +57,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(api_router)
+app.include_router(content_os_router)
 app.include_router(future_aii_router)
+app.include_router(api_router)
 
 
 @app.get("/")

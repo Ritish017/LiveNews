@@ -1501,3 +1501,159 @@ export interface ContentOSItem {
   performance?: Record<string, any>;
   learning?: Record<string, any>;
 }
+
+export interface CreatorTodayRecommendation {
+  id: string;
+  badge: string;
+  title: string;
+  why: string;
+  format: string;
+  content_type: string;
+  topic: string;
+  action_label: string;
+}
+
+export interface CreatorTodayPayload {
+  greeting: string;
+  recommendations: CreatorTodayRecommendation[];
+  best_ideas: Array<{ rank: number; type: string; title: string }>;
+  content_queue_today: Array<{ time: string; pillar: string; title: string; status: string }>;
+  creator_learning: string;
+}
+
+export interface CreatorRadarTrend {
+  id: string;
+  topic: string;
+  what_happened: string;
+  why_it_matters: string;
+  best_content_type: string;
+  recommended_angle: string;
+}
+
+export type CreatorRadarItem = CreatorRadarTrend;
+
+export interface CreatorRadarPayload {
+  breaking_now: CreatorRadarTrend[];
+  rising: CreatorRadarTrend[];
+  under_the_radar: CreatorRadarTrend[];
+  saturated: CreatorRadarTrend[];
+  declining: CreatorRadarTrend[];
+}
+
+export interface CreatorUniversalPackage {
+  id: string;
+  title: string;
+  topic?: string;
+  what_happened?: string;
+  content_type: string;
+  series: string;
+  format: string;
+  duration_seconds: number;
+  target_audience: string;
+  core_objective: string;
+  strategic_angle: string;
+  why_now: string;
+  why_audience_cares: string;
+  differentiation: string;
+  hook: string;
+  alternative_hooks: string[];
+  script_full_text: string;
+  script_shots: Array<{
+    shot_id: string;
+    time_start: number;
+    time_end: number;
+    duration_sec: number;
+    purpose: string;
+    voiceover: string;
+    on_screen_text: string;
+    visual_concept: string;
+    subject: string;
+    action: string;
+    environment: string;
+    composition: string;
+    camera: string;
+    lens: string;
+    movement: string;
+    lighting: string;
+    sound_effects: string;
+    transition_out?: string;
+    negative_constraints?: string[];
+  }>;
+  flow_prompts: Array<{
+    shot_id: string;
+    duration_sec: number;
+    input_type: string;
+    compiled_prompt: string;
+    camera_direction: string;
+    lighting_and_style: string;
+    negative_prompt: string;
+  }>;
+  gemini_prompts: {
+    deep_research_prompt: string;
+    creative_angle_prompt: string;
+    script_polisher_prompt: string;
+    critic_prompt: string;
+    repurposing_prompt: string;
+  };
+  chatgpt_prompts: {
+    system_context: string;
+    creative_director_task: string;
+    plugin_ready: boolean;
+    recommended_plugins: string[];
+  };
+  remotion_spec: {
+    composition_name: string;
+    duration_in_frames: number;
+    fps: number;
+    width: number;
+    height: number;
+    is_atelier_mode: boolean;
+    copyable_react_code: string;
+    render_command: string;
+  };
+  hyperframes_spec: {
+    html_markup: string;
+    css_styles: string;
+    gsap_timeline_code: string;
+    duration_sec: number;
+  };
+  heygen_spec: {
+    avatar_id: string;
+    voice_id: string;
+    speaking_script: string;
+    b_roll_cues: Array<Record<string, any>>;
+  };
+  opensource_spec: {
+    ffmpeg_concat_command: string;
+    whisper_transcription_command: string;
+    piper_tts_command: string;
+    free_stock_keywords: string[];
+  };
+  editing_plan: {
+    software_targets: string[];
+    timeline_cuts: Array<Record<string, any>>;
+    audio_track_guidelines: string;
+    export_preset: string;
+  };
+  social_package: {
+    caption_short: string;
+    caption_long: string;
+    hashtags: string[];
+    cta_primary: string;
+    cta_type: string;
+    comment_keyword: string;
+    dm_public_reply: string;
+    dm_private_message: string;
+    dm_resource_deliverable: string;
+    follow_nudge: string;
+  };
+  cost_tier: string;
+  primary_engine_routed: string;
+  routing_reason: string;
+  source_claims: Array<Record<string, any>>;
+  confidence_score: number;
+  epistemic_status: string;
+  originality_score: number;
+  anti_slop_passed: boolean;
+  created_at: string;
+}
